@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>spatialetwo</title>
+    <title>green chat</title>
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -133,7 +133,7 @@
                     <circle cx="205" cy="256" r="85" fill="white"/>
                     <circle cx="335" cy="256" r="55" fill="white"/>
                 </svg>
-                <p class="text-xs sm:text-sm font-bold tracking-widest uppercase text-white/50">your space to connect</p>
+                <p class="text-xs sm:text-sm font-bold tracking-widest text-white/50 lowercase">your space to connect</p>
             </div>
         </main>
     </div>
@@ -258,7 +258,7 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'spatialetwo-app';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'green-chat-app';
         const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : JSON.stringify({
             apiKey: "AIzaSyBGpqz8AiNyMg4SHu1ljRd_INI9YAiSsIo",
             authDomain: "spatialetwo.firebaseapp.com",
@@ -336,7 +336,7 @@
         // Local Storage persistent session state
         function getStoredAccounts() {
             try {
-                return JSON.parse(localStorage.getItem('spatialetwo_local_accounts') || '{}');
+                return JSON.parse(localStorage.getItem('green_chat_local_accounts') || '{}');
             } catch(e) {
                 return {};
             }
@@ -345,8 +345,8 @@
         function saveLocalAccount(userData) {
             const accs = getStoredAccounts();
             accs[userData.username.toLowerCase()] = userData;
-            localStorage.setItem('spatialetwo_local_accounts', JSON.stringify(accs));
-            localStorage.setItem('spatialetwo_logged_username', userData.username.toLowerCase());
+            localStorage.setItem('green_chat_local_accounts', JSON.stringify(accs));
+            localStorage.setItem('green_chat_logged_username', userData.username.toLowerCase());
         }
 
         async function initAuth() {
@@ -369,7 +369,7 @@
         }
 
         async function restoreUserSession() {
-            const savedUsername = localStorage.getItem('spatialetwo_logged_username');
+            const savedUsername = localStorage.getItem('green_chat_logged_username');
             if (savedUsername) {
                 let found = await loadProfileByUsername(savedUsername);
                 if (!found) {
@@ -432,8 +432,8 @@
                             <circle cx="205" cy="256" r="85" fill="white"/>
                             <circle cx="335" cy="256" r="55" fill="white"/>
                         </svg>
-                        <h1 class="text-3xl sm:text-4xl font-black tracking-tighter">spatialetwo</h1>
-                        <p class="text-xs sm:text-sm text-white/50 tracking-widest uppercase">your space to connect</p>
+                        <h1 class="text-3xl sm:text-4xl font-black tracking-tighter">green chat</h1>
+                        <p class="text-xs sm:text-sm text-white/50 tracking-widest lowercase">your space to connect</p>
                     </div>
 
                     <div class="w-full max-w-sm space-y-6">
@@ -667,7 +667,7 @@
             const localAccs = getStoredAccounts();
             if (localAccs[username] && localAccs[username].password === password) {
                 userProfile = localAccs[username];
-                localStorage.setItem('spatialetwo_logged_username', username);
+                localStorage.setItem('green_chat_logged_username', username);
                 renderMainApp();
                 return;
             }
@@ -696,7 +696,7 @@
         }
 
         window.logoutUser = function() {
-            localStorage.removeItem('spatialetwo_logged_username');
+            localStorage.removeItem('green_chat_logged_username');
             userProfile = null;
             renderAuthScreen();
         }
@@ -711,7 +711,7 @@
                             <circle cx="205" cy="256" r="85" fill="white"/>
                             <circle cx="335" cy="256" r="55" fill="white"/>
                         </svg>
-                        <span class="app-title font-black tracking-tighter">spatialetwo</span>
+                        <span class="app-title font-black tracking-tighter">green chat</span>
                     </div>
                     <div class="flex items-center space-x-3">
                         <button onclick="switchTab('messages')" class="relative p-3 rounded-full glass-panel active:scale-95" title="Direct Messages & Groups">
@@ -1203,7 +1203,7 @@
 
             await setDoc(doc(collection(db, 'artifacts', appId, 'public', 'data', 'direct_messages')), newMsg);
             await addNotification(targetUid, `@${userProfile.username} sent you a direct message`);
-            sendDeviceNotification("spatialetwo", `@${userProfile.username} sent you a DM`);
+            sendDeviceNotification("green chat", `@${userProfile.username} sent you a DM`);
             input.value = '';
             removeDmImage();
         }
@@ -1448,7 +1448,7 @@
             } else {
                 cLikes.push(userProfile.uid);
                 await addNotification(commentAuthorUid, `@${userProfile.username} liked your comment`);
-                sendDeviceNotification("spatialetwo", `@${userProfile.username} liked your comment`);
+                sendDeviceNotification("green chat", `@${userProfile.username} liked your comment`);
             }
             comments[commentIndex].likes = cLikes;
 
@@ -1609,7 +1609,7 @@
                 likes.push(userProfile.uid);
                 if (authorUid !== userProfile.uid) {
                     await addNotification(authorUid, `@${userProfile.username} liked your publication`);
-                    sendDeviceNotification("spatialetwo", `@${userProfile.username} liked your post`);
+                    sendDeviceNotification("green chat", `@${userProfile.username} liked your post`);
                 }
             }
             await updateDoc(postRef, { likes });
@@ -1637,7 +1637,7 @@
             await updateDoc(postRef, { comments });
             if (authorUid !== userProfile.uid) {
                 await addNotification(authorUid, `@${userProfile.username} commented on your publication`);
-                sendDeviceNotification("spatialetwo", `@${userProfile.username} commented on your post`);
+                sendDeviceNotification("green chat", `@${userProfile.username} commented on your post`);
             }
             input.value = '';
         }
@@ -1665,7 +1665,7 @@
                 targetFollowers.push(userProfile.uid);
                 
                 await addNotification(targetUid, `@${userProfile.username} started following you`);
-                sendDeviceNotification("spatialetwo", `@${userProfile.username} started following you`);
+                sendDeviceNotification("green chat", `@${userProfile.username} started following you`);
             }
 
             await updateDoc(myRef, { following: myFollowing });
@@ -1804,7 +1804,7 @@
                                 <circle cx="205" cy="256" r="85" fill="white"/>
                                 <circle cx="335" cy="256" r="55" fill="white"/>
                             </svg>
-                            <p class="text-xs sm:text-sm font-semibold text-white/90">spatialetwo</p>
+                            <p class="text-xs sm:text-sm font-semibold text-white/90">green chat</p>
                             <p class="text-xs text-white/50 font-normal">an Alby A production</p>
                         </div>
                     </div>
@@ -2119,7 +2119,6 @@
             const usersSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'users'));
             const followingList = [];
             usersSnap.forEach(d => {
-                if (followingUids.includes(d.data().uid)) followingList.value = d.data(); // fixed reference
                 if (followingUids.includes(d.data().uid)) followingList.push(d.data());
             });
 
