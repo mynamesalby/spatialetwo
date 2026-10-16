@@ -27,45 +27,43 @@
             }
         }
     </script>
+    <!-- Logo Favicon matching two circles with transparent background -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='transparent'/%3E%3Ccircle cx='205' cy='256' r='85' fill='white'/%3E%3Ccircle cx='335' cy='256' r='55' fill='white'/%3E%3C/svg%3E">
     
     <style>
         body {
+            background-color: #000000;
+            color: #ffffff;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent !important;
             user-select: none;
-            transition: background-color 0.2s ease, color 0.2s ease;
         }
 
-        /* Dynamic Theme Support */
-        body.dark {
-            background-color: #000000;
-            color: #ffffff;
-        }
-        body.light {
-            background-color: #f8f9fa;
-            color: #111111;
-        }
-
+        /* Disable blue tap highlights across mobile webviews and browsers */
         a, button, input, textarea, select, div, label, svg {
             -webkit-tap-highlight-color: transparent !important;
             -webkit-touch-callout: none !important;
             outline: none !important;
         }
 
+        /* Minimal Sleek Scrollbar */
         ::-webkit-scrollbar {
             width: 5px;
             height: 5px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.05);
+            background: rgba(0, 0, 0, 0.95);
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(128, 128, 128, 0.25);
+            background: rgba(255, 255, 255, 0.25);
             border-radius: 9999px;
         }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.6);
+        }
 
+        /* Custom Dragbar Range Input Styling */
         input[type=range] {
             -webkit-appearance: none;
             appearance: none;
@@ -79,52 +77,37 @@
             width: 100%;
             height: 6px;
             cursor: pointer;
-            background: rgba(128, 128, 128, 0.2);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 9999px;
         }
         input[type=range]::-webkit-slider-thumb {
             height: 22px;
             width: 22px;
             border-radius: 50%;
+            background: #ffffff;
             cursor: pointer;
             -webkit-appearance: none;
             margin-top: -8px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
             transition: transform 0.1s ease;
         }
-
-        body.dark input[type=range]::-webkit-slider-thumb {
-            background: #ffffff;
-            box-shadow: 0 0 10px rgba(255,255,255,0.5);
-        }
-        body.light input[type=range]::-webkit-slider-thumb {
-            background: #111111;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        input[type=range]::-webkit-slider-thumb:active {
+            transform: scale(1.25);
         }
 
-        body.dark .glass-panel {
+        .glass-panel {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
         }
-        body.light .glass-panel {
-            background: rgba(0, 0, 0, 0.03);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(0, 0, 0, 0.06);
-        }
 
-        body.dark .glass-header {
+        .glass-header {
             background: rgba(0, 0, 0, 0.92);
             backdrop-filter: blur(28px);
             -webkit-backdrop-filter: blur(28px);
         }
-        body.light .glass-header {
-            background: rgba(248, 249, 250, 0.92);
-            backdrop-filter: blur(28px);
-            -webkit-backdrop-filter: blur(28px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-        }
 
+        /* Desktop vs Mobile Typography & Responsive Utilities */
         @media (min-width: 1024px) {
             .app-title { font-size: 1.5rem; }
             .post-text { font-size: 1.125rem; }
@@ -139,40 +122,42 @@
         }
     </style>
 </head>
-<body class="dark antialiased selection:bg-white selection:text-black min-h-screen">
+<body class="bg-black text-white antialiased selection:bg-white selection:text-black min-h-screen">
 
     <div id="app" class="min-h-screen flex flex-col items-center justify-between">
+        <!-- Main Application Viewport -->
         <main id="main-content" class="w-full max-w-xl min-h-screen flex flex-col pb-24 sm:pb-0">
+            <!-- Loading splash screen -->
             <div id="splash-screen" class="flex flex-col items-center justify-center min-h-screen p-6 space-y-8">
                 <svg class="w-24 h-24 animate-pulse" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="205" cy="256" r="85" fill="currentColor"/>
-                    <circle cx="335" cy="256" r="55" fill="currentColor"/>
+                    <circle cx="205" cy="256" r="85" fill="white"/>
+                    <circle cx="335" cy="256" r="55" fill="white"/>
                 </svg>
-                <p class="text-xs sm:text-sm font-bold tracking-widest uppercase opacity-50">spatialetwo</p>
+                <p class="text-xs sm:text-sm font-bold tracking-widest uppercase text-white/50">spatialetwo</p>
             </div>
         </main>
     </div>
 
     <!-- System Modal Dialog -->
     <div id="custom-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl hidden p-6">
-        <div class="glass-panel p-8 rounded-3xl max-w-sm w-full text-center space-y-6">
+        <div class="glass-panel text-white p-8 rounded-3xl max-w-sm w-full text-center space-y-6">
             <svg class="w-12 h-12 mx-auto" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="205" cy="256" r="85" fill="currentColor"/>
-                <circle cx="335" cy="256" r="55" fill="currentColor"/>
+                <circle cx="205" cy="256" r="85" fill="white"/>
+                <circle cx="335" cy="256" r="55" fill="white"/>
             </svg>
-            <p id="modal-message" class="text-xs sm:text-sm font-medium opacity-90 leading-relaxed"></p>
-            <button onclick="closeModal()" class="w-full py-4 bg-white text-black dark:bg-white dark:text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">dismiss</button>
+            <p id="modal-message" class="text-xs sm:text-sm font-medium text-white/90 leading-relaxed"></p>
+            <button onclick="closeModal()" class="w-full py-4 bg-white text-black text-xs sm:text-sm font-bold rounded-full active:scale-95">dismiss</button>
         </div>
     </div>
 
     <!-- Edit Post Modal -->
     <div id="edit-post-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl hidden p-6">
-        <div class="glass-panel p-6 rounded-3xl max-w-md w-full space-y-4">
-            <h3 class="text-sm font-bold">edit publication</h3>
-            <textarea id="edit-post-caption" rows="4" class="w-full p-4 glass-panel rounded-2xl text-xs sm:text-sm focus:outline-none resize-none"></textarea>
+        <div class="glass-panel text-white p-6 rounded-3xl max-w-md w-full space-y-4">
+            <h3 class="text-sm font-bold text-white">edit publication</h3>
+            <textarea id="edit-post-caption" rows="4" class="w-full p-4 glass-panel rounded-2xl text-xs sm:text-sm text-white focus:outline-none resize-none"></textarea>
             <div class="flex space-x-3">
                 <button onclick="savePostEdit()" class="flex-1 py-3 bg-white text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">save</button>
-                <button onclick="closeEditModal()" class="flex-1 py-3 glass-panel font-bold text-xs sm:text-sm rounded-full active:scale-95">cancel</button>
+                <button onclick="closeEditModal()" class="flex-1 py-3 glass-panel text-white font-bold text-xs sm:text-sm rounded-full active:scale-95">cancel</button>
             </div>
         </div>
     </div>
@@ -185,44 +170,86 @@
             </div>
             <div class="flex space-x-4 w-full">
                 <button onclick="capturePhoto()" class="flex-1 py-4 bg-white text-black font-semibold text-xs sm:text-sm rounded-full active:scale-95">capture</button>
-                <button onclick="closeCamera()" class="flex-1 py-4 glass-panel font-semibold text-xs sm:text-sm rounded-full active:scale-95">cancel</button>
+                <button onclick="closeCamera()" class="flex-1 py-4 glass-panel text-white font-semibold text-xs sm:text-sm rounded-full active:scale-95">cancel</button>
             </div>
         </div>
         <canvas id="snapshot-canvas" class="hidden"></canvas>
     </div>
 
-    <!-- Followers / Following / Group Creator Modal -->
+    <!-- Followers / Following Modal -->
     <div id="user-list-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl hidden p-6">
-        <div class="glass-panel p-6 rounded-3xl max-w-md w-full space-y-4 max-h-[85vh] flex flex-col">
-            <div class="flex justify-between items-center pb-2 border-b opacity-20">
-                <h3 id="user-list-title" class="text-sm font-bold">users</h3>
-                <button onclick="closeUserListModal()" class="p-2 opacity-60 text-sm">✕</button>
+        <div class="glass-panel text-white p-6 rounded-3xl max-w-md w-full space-y-4 max-h-[80vh] flex flex-col">
+            <div class="flex justify-between items-center pb-2 border-b border-white/10">
+                <h3 id="user-list-title" class="text-sm font-bold text-white">users</h3>
+                <button onclick="closeUserListModal()" class="p-2 text-white/60 text-sm">✕</button>
             </div>
             <div id="user-list-content" class="flex-1 overflow-y-auto space-y-3 pt-2"></div>
         </div>
     </div>
 
-    <!-- Detailed Video Call Modal in DM -->
-    <div id="video-call-modal" class="fixed inset-0 z-50 bg-black flex flex-col justify-between hidden p-6 text-white">
-        <div class="flex justify-between items-center z-10">
-            <div class="flex items-center space-x-3 glass-panel px-4 py-2 rounded-full">
+    <!-- Detailed Video Call Modal (DM / Group Call simulation) -->
+    <div id="video-call-modal" class="fixed inset-0 z-50 bg-black flex flex-col justify-between hidden p-4 sm:p-8">
+        <div class="flex justify-between items-center z-10 glass-panel px-6 py-4 rounded-3xl">
+            <div class="flex items-center space-x-3">
                 <div class="w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
-                <span id="call-target-name" class="text-xs sm:text-sm font-bold">secure video channel</span>
+                <span id="video-call-title" class="text-xs sm:text-sm font-bold">secure video transmission</span>
             </div>
-            <button onclick="toggleCallMute()" id="call-mute-btn" class="p-3 glass-panel rounded-full text-xs font-bold active:scale-95">mute mic</button>
+            <span id="video-call-timer" class="text-xs font-mono text-white/70">00:00</span>
         </div>
 
-        <div class="flex-1 flex items-center justify-center relative my-4 rounded-3xl overflow-hidden glass-panel">
-            <video id="local-video-preview" autoplay playsinline muted class="absolute bottom-6 right-6 w-28 h-40 object-cover rounded-2xl border border-white/20 z-20 shadow-2xl"></video>
-            <video id="remote-video-stream" autoplay playsinline class="w-full h-full object-cover"></video>
-            <div id="call-status-overlay" class="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md space-y-3">
-                <svg class="w-16 h-16 animate-bounce text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                <p class="text-xs font-medium text-white/80">establishing secure peer connection...</p>
+        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 my-4 relative">
+            <div class="w-full h-full rounded-3xl overflow-hidden glass-panel relative flex items-center justify-center">
+                <video id="call-remote-video" autoplay playsinline class="w-full h-full object-cover"></video>
+                <div class="absolute bottom-4 left-4 glass-panel px-3 py-1.5 rounded-full text-[10px] font-bold">remote feed</div>
+            </div>
+            <div class="w-full h-full rounded-3xl overflow-hidden glass-panel relative flex items-center justify-center">
+                <video id="call-local-video" autoplay muted playsinline class="w-full h-full object-cover"></video>
+                <div class="absolute bottom-4 left-4 glass-panel px-3 py-1.5 rounded-full text-[10px] font-bold">you</div>
             </div>
         </div>
 
-        <div class="flex space-x-4 items-center justify-center pb-2 z-10">
-            <button onclick="endVideoCall()" class="px-8 py-4 bg-red-600 text-white font-bold text-xs sm:text-sm rounded-full active:scale-95">end call</button>
+        <div class="flex justify-center items-center space-x-6 z-10 pb-4">
+            <button onclick="toggleCallMute()" id="call-mute-btn" class="p-4 rounded-full glass-panel active:scale-95 text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+            </button>
+            <button onclick="endVideoCall()" class="px-8 py-4 bg-red-600 text-white font-bold text-xs sm:text-sm rounded-full active:scale-95 shadow-lg shadow-red-600/30">
+                end call
+            </button>
+            <button onclick="toggleCallVideo()" id="call-video-btn" class="p-4 rounded-full glass-panel active:scale-95 text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Create Group Modal -->
+    <div id="create-group-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl hidden p-6">
+        <div class="glass-panel text-white p-6 rounded-3xl max-w-md w-full space-y-4 max-h-[85vh] flex flex-col">
+            <div class="flex justify-between items-center pb-2 border-b border-white/10">
+                <h3 class="text-sm font-bold text-white">create secure group</h3>
+                <button onclick="closeCreateGroupModal()" class="p-2 text-white/60 text-sm">✕</button>
+            </div>
+            
+            <div class="space-y-4 flex-1 overflow-y-auto pr-1">
+                <input type="text" id="group-name-input" placeholder="group frequency name..." 
+                    class="w-full px-5 py-3.5 glass-panel rounded-full text-white placeholder-white/30 text-xs sm:text-sm focus:outline-none">
+                
+                <div class="flex items-center space-x-3 p-2">
+                    <div id="group-avatar-preview" class="w-12 h-12 rounded-full glass-panel flex items-center justify-center overflow-hidden flex-shrink-0">
+                        <svg class="w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                    <label class="flex-1 text-xs font-semibold text-white/80 glass-panel py-3.5 rounded-full text-center cursor-pointer active:scale-95">
+                        upload group pfp
+                        <input type="file" accept="image/*" onchange="handleGroupAvatarUpload(event)" class="hidden">
+                    </label>
+                </div>
+
+                <div class="space-y-2">
+                    <span class="text-[10px] font-bold text-white/50 uppercase tracking-widest">select members</span>
+                    <div id="group-member-selection-list" class="space-y-2 max-h-40 overflow-y-auto"></div>
+                </div>
+            </div>
+
+            <button onclick="confirmCreateGroup()" class="w-full py-3.5 bg-white text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">create group</button>
         </div>
     </div>
 
@@ -252,25 +279,13 @@
         let activeTab = 'feed';
         let viewProfileUid = null;
         let activeEditingPostId = null;
-        let activeChatUser = null; 
-        let callPeerConnection = null;
-        let callLocalStream = null;
-        let isCallMuted = false;
-        let currentTheme = localStorage.getItem('spatialetwo_theme') || 'dark';
+        let activeDmUid = null;
+        let activeGroupId = null;
+        let callTimerInterval = null;
+        let callSeconds = 0;
+        let callStream = null;
 
-        function applyTheme(theme) {
-            currentTheme = theme;
-            localStorage.setItem('spatialetwo_theme', theme);
-            const body = document.body;
-            if (theme === 'light') {
-                body.classList.remove('dark');
-                body.classList.add('light');
-            } else {
-                body.classList.remove('light');
-                body.classList.add('dark');
-            }
-        }
-
+        // System Dialog Handler
         window.showModal = function(msg) {
             document.getElementById('modal-message').innerText = msg;
             document.getElementById('custom-modal').classList.remove('hidden');
@@ -279,6 +294,7 @@
             document.getElementById('custom-modal').classList.add('hidden');
         }
 
+        // Check 100+ followers for verification tick
         function isVerified(profile) {
             return profile && profile.followers && profile.followers.length >= 100;
         }
@@ -290,6 +306,7 @@
             return '';
         }
 
+        // Android & iOS Device Notification Request & Dispatch
         function requestNotificationPermission() {
             if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
                 Notification.requestPermission().catch(() => {});
@@ -299,23 +316,25 @@
         function sendDeviceNotification(title, body) {
             if ("Notification" in window && Notification.permission === "granted") {
                 try {
-                    if (navigator.serviceWorker && navigator.serviceWorker.ready) {
-                        navigator.serviceWorker.ready.then(reg => {
-                            reg.showNotification(title, {
-                                body: body,
-                                icon: 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 512 512\'%3E%3Ccircle cx=\'205\' cy=\'256\' r=\'85\' fill=\'white\'/%3E%3Ccircle cx=\'335\' cy=\'256\' r=\'55\' fill=\'white\'/%3E%3C/svg%3E'
-                            });
+                    // Compatible with Android/iOS Web Push / PWA notifications
+                    const options = {
+                        body: body,
+                        icon: 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 512 512\'%3E%3Ccircle cx=\'205\' cy=\'256\' r=\'85\' fill=\'white\'/%3E%3Ccircle cx=\'335\' cy=\'256\' r=\'55\' fill=\'white\'/%3E%3C/svg%3E',
+                        badge: 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 512 512\'%3E%3Ccircle cx=\'205\' cy=\'256\' r=\'85\' fill=\'white\'/%3E%3C/svg%3E',
+                        vibrate: [200, 100, 200]
+                    };
+                    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                        navigator.serviceWorker.ready.then(registration => {
+                            registration.showNotification(title, options);
                         });
                     } else {
-                        new Notification(title, {
-                            body: body,
-                            icon: 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 512 512\'%3E%3Ccircle cx=\'205\' cy=\'256\' r=\'85\' fill=\'white\'/%3E%3Ccircle cx=\'335\' cy=\'256\' r=\'55\' fill=\'white\'/%3E%3C/svg%3E'
-                        });
+                        new Notification(title, options);
                     }
-                } catch(e) {}
+                } catch(e) { console.error("Notification dispatch error:", e); }
             }
         }
 
+        // Local Storage persistent session state
         function getStoredAccounts() {
             try {
                 return JSON.parse(localStorage.getItem('spatialetwo_local_accounts') || '{}');
@@ -332,7 +351,6 @@
         }
 
         async function initAuth() {
-            applyTheme(currentTheme);
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
@@ -340,6 +358,7 @@
                     await signInAnonymously(auth);
                 }
             } catch (err) {
+                console.error("Auth init catch:", err);
                 try { await signInAnonymously(auth); } catch(e) {}
             }
 
@@ -377,7 +396,9 @@
                         renderMainApp();
                         return;
                     }
-                } catch (e) {}
+                } catch (e) {
+                    console.error("Session UID load error:", e);
+                }
             }
 
             renderAuthScreen();
@@ -397,7 +418,9 @@
                     userProfile = matched;
                     return true;
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.error("Profile load error:", e);
+            }
             return false;
         }
 
@@ -407,17 +430,17 @@
                 <div class="flex flex-col items-center justify-center min-h-screen p-6 space-y-8 animate-fadeIn">
                     <div class="flex flex-col items-center space-y-4 text-center">
                         <svg class="w-20 h-20 sm:w-24 sm:h-24" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="205" cy="256" r="85" fill="currentColor"/>
-                            <circle cx="335" cy="256" r="55" fill="currentColor"/>
+                            <circle cx="205" cy="256" r="85" fill="white"/>
+                            <circle cx="335" cy="256" r="55" fill="white"/>
                         </svg>
                         <h1 class="text-3xl sm:text-4xl font-black tracking-tighter">spatialetwo</h1>
-                        <p class="text-xs sm:text-sm opacity-50 tracking-widest uppercase">the minimalist network</p>
+                        <p class="text-xs sm:text-sm text-white/50 tracking-widest uppercase">the minimalist network</p>
                     </div>
 
                     <div class="w-full max-w-sm space-y-6">
                         <div class="flex glass-panel p-1 rounded-full">
-                            <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-3 text-xs sm:text-sm font-bold rounded-full bg-white text-black dark:bg-white dark:text-black">login</button>
-                            <button id="tab-signup" onclick="switchAuthTab('signup')" class="flex-1 py-3 text-xs sm:text-sm font-bold rounded-full opacity-70">create account</button>
+                            <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-3 text-xs sm:text-sm font-bold rounded-full bg-white text-black">login</button>
+                            <button id="tab-signup" onclick="switchAuthTab('signup')" class="flex-1 py-3 text-xs sm:text-sm font-bold rounded-full text-white/70">create account</button>
                         </div>
 
                         <div id="auth-form-container" class="space-y-4"></div>
@@ -433,71 +456,73 @@
             const signupBtn = document.getElementById('tab-signup');
 
             if (mode === 'login') {
-                loginBtn.className = "flex-1 py-3 text-xs sm:text-sm font-bold rounded-full bg-white text-black dark:bg-white dark:text-black";
-                signupBtn.className = "flex-1 py-3 text-xs sm:text-sm font-bold rounded-full opacity-70";
+                loginBtn.className = "flex-1 py-3 text-xs sm:text-sm font-bold rounded-full bg-white text-black";
+                signupBtn.className = "flex-1 py-3 text-xs sm:text-sm font-bold rounded-full text-white/70";
                 container.innerHTML = `
                     <form onsubmit="handleLogin(event)" class="space-y-4">
                         <input type="text" id="login-username" placeholder="username" required 
-                            class="w-full px-5 py-4 glass-panel rounded-full placeholder-opacity-30 text-xs sm:text-sm focus:outline-none">
+                            class="w-full px-5 py-4 glass-panel rounded-full text-white placeholder-white/30 text-xs sm:text-sm focus:outline-none">
                         <input type="password" id="login-password" placeholder="password" required 
-                            class="w-full px-5 py-4 glass-panel rounded-full placeholder-opacity-30 text-xs sm:text-sm focus:outline-none">
-                        <button type="submit" class="w-full py-4 bg-white text-black dark:bg-white dark:text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">enter</button>
+                            class="w-full px-5 py-4 glass-panel rounded-full text-white placeholder-white/30 text-xs sm:text-sm focus:outline-none">
+                        <button type="submit" class="w-full py-4 bg-white text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">enter</button>
                     </form>
                 `;
             } else {
-                signupBtn.className = "flex-1 py-3 text-xs sm:text-sm font-bold rounded-full bg-white text-black dark:bg-white dark:text-black";
-                loginBtn.className = "flex-1 py-3 text-xs sm:text-sm font-bold rounded-full opacity-70";
+                signupBtn.className = "flex-1 py-3 text-xs sm:text-sm font-bold rounded-full bg-white text-black";
+                loginBtn.className = "flex-1 py-3 text-xs sm:text-sm font-bold rounded-full text-white/70";
                 container.innerHTML = `
                     <form onsubmit="handleSignup(event)" class="space-y-4">
                         <input type="text" id="su-name" placeholder="full name" required 
-                            class="w-full px-5 py-4 glass-panel rounded-full placeholder-opacity-30 text-xs sm:text-sm focus:outline-none">
+                            class="w-full px-5 py-4 glass-panel rounded-full text-white placeholder-white/30 text-xs sm:text-sm focus:outline-none">
                         <input type="text" id="su-username" placeholder="username (unique)" required 
-                            class="w-full px-5 py-4 glass-panel rounded-full placeholder-opacity-30 text-xs sm:text-sm focus:outline-none">
+                            class="w-full px-5 py-4 glass-panel rounded-full text-white placeholder-white/30 text-xs sm:text-sm focus:outline-none">
                         <input type="password" id="su-password" placeholder="password" required 
-                            class="w-full px-5 py-4 glass-panel rounded-full placeholder-opacity-30 text-xs sm:text-sm focus:outline-none">
+                            class="w-full px-5 py-4 glass-panel rounded-full text-white placeholder-white/30 text-xs sm:text-sm focus:outline-none">
                         
+                        <!-- Age Selection -->
                         <div class="glass-panel p-5 rounded-3xl space-y-3">
-                            <div class="flex justify-between text-xs font-semibold opacity-70">
+                            <div class="flex justify-between text-xs font-semibold text-white/70">
                                 <span>age</span>
-                                <span id="age-display" class="font-bold">22 yrs</span>
+                                <span id="age-display" class="text-white font-bold">22 yrs</span>
                             </div>
                             <input type="range" id="su-age-slider" min="14" max="90" value="22" oninput="updateAgeDisplay(this.value)">
                         </div>
 
+                        <!-- Gender Spectrum Selection -->
                         <div class="glass-panel p-5 rounded-3xl space-y-3">
-                            <div class="flex justify-between text-xs font-semibold opacity-70">
+                            <div class="flex justify-between text-xs font-semibold text-white/70">
                                 <span>gender orientation</span>
-                                <span id="gender-display" class="font-bold">non-binary</span>
+                                <span id="gender-display" class="text-white font-bold">non-binary</span>
                             </div>
                             <input type="range" id="su-gender-slider" min="0" max="3" value="0" step="1" oninput="updateGenderDisplay(this.value)">
                         </div>
 
                         <textarea id="su-bio" placeholder="short bio..." rows="2" 
-                            class="w-full px-5 py-4 glass-panel rounded-3xl placeholder-opacity-30 text-xs sm:text-sm focus:outline-none resize-none"></textarea>
+                            class="w-full px-5 py-4 glass-panel rounded-3xl text-white placeholder-white/30 text-xs sm:text-sm focus:outline-none resize-none"></textarea>
                         
                         <div class="flex items-center space-x-3 p-2">
                             <div id="avatar-preview" class="w-12 h-12 rounded-full glass-panel flex items-center justify-center overflow-hidden flex-shrink-0">
-                                <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                <svg class="w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                             </div>
                             <div class="flex space-x-2 flex-1">
-                                <label class="flex-1 text-xs font-semibold opacity-80 glass-panel py-3.5 rounded-full text-center cursor-pointer active:scale-95">
-                                    avatar
+                                <label class="flex-1 text-xs font-semibold text-white/80 glass-panel py-3.5 rounded-full text-center cursor-pointer active:scale-95">
+                                    gallery
                                     <input type="file" id="su-avatar-file" accept="image/*" onchange="handleAvatarUpload(event)" class="hidden">
                                 </label>
-                                <button type="button" onclick="openCameraModal()" class="flex-1 text-xs font-semibold opacity-80 glass-panel py-3.5 rounded-full active:scale-95">
+                                <button type="button" onclick="openCameraModal()" class="flex-1 text-xs font-semibold text-white/80 glass-panel py-3.5 rounded-full active:scale-95">
                                     camera
                                 </button>
                             </div>
                         </div>
 
                         <div class="glass-panel p-4 rounded-2xl flex items-start space-x-3">
-                            <input type="checkbox" id="terms-check" required class="mt-1 w-4 h-4 rounded bg-transparent border opacity-30">
-                            <label for="terms-check" class="text-[11px] sm:text-xs opacity-60 leading-tight">
+                            <input type="checkbox" id="terms-check" required class="mt-1 w-4 h-4 rounded bg-transparent border-white/30">
+                            <label for="terms-check" class="text-[11px] sm:text-xs text-white/60 leading-tight">
                                 I confirm I am 14 years of age or older and agree not to publish any sexually explicit or offensive content.
                             </label>
                         </div>
 
-                        <button type="submit" class="w-full py-4 bg-white text-black dark:bg-white dark:text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">create account</button>
+                        <button type="submit" class="w-full py-4 bg-white text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">create account</button>
                     </form>
                 `;
             }
@@ -626,7 +651,9 @@
 
             try {
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', activeUid), newUser);
-            } catch(e) {}
+            } catch(e) {
+                console.warn("Firestore user sync failed, continuing locally:", e);
+            }
 
             userProfile = newUser;
             saveLocalAccount(newUser);
@@ -664,6 +691,7 @@
                     showModal("Invalid username or password.");
                 }
             } catch (err) {
+                console.error("Login failed:", err);
                 showModal("Login failed. Check your network connection.");
             }
         }
@@ -681,21 +709,21 @@
                 <header class="sticky top-0 z-40 glass-header px-6 py-4 flex items-center justify-between">
                     <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('feed')">
                         <svg class="w-8 h-8 sm:w-9 sm:h-9" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="205" cy="256" r="85" fill="currentColor"/>
-                            <circle cx="335" cy="256" r="55" fill="currentColor"/>
+                            <circle cx="205" cy="256" r="85" fill="white"/>
+                            <circle cx="335" cy="256" r="55" fill="white"/>
                         </svg>
                         <span class="app-title font-black tracking-tighter">spatialetwo</span>
                     </div>
                     <div class="flex items-center space-x-3">
                         <button onclick="switchTab('messages')" class="relative p-3 rounded-full glass-panel active:scale-95" title="Direct Messages & Groups">
-                            <svg class="header-icon opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                            <svg class="header-icon text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                         </button>
                         <button onclick="switchTab('notifications')" class="relative p-3 rounded-full glass-panel active:scale-95" title="Notifications">
-                            <svg class="header-icon opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                            <span id="notif-badge" class="hidden absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-black dark:bg-white rounded-full"></span>
+                            <svg class="header-icon text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                            <span id="notif-badge" class="hidden absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-white rounded-full"></span>
                         </button>
                         <button onclick="switchTab('settings')" class="p-3 rounded-full glass-panel active:scale-95" title="Settings">
-                            <svg class="header-icon opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            <svg class="header-icon text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                         </button>
                     </div>
                 </header>
@@ -706,16 +734,16 @@
                 <!-- Floating Bottom Navigation -->
                 <nav class="fixed bottom-0 left-0 right-0 z-40 glass-header py-3 px-8 flex justify-around items-center max-w-xl mx-auto">
                     <button onclick="switchTab('feed')" class="p-3 active:scale-95">
-                        <svg class="w-6 h-6 ${activeTab === 'feed' ? 'opacity-100 font-bold' : 'opacity-40'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                        <svg class="w-6 h-6 ${activeTab === 'feed' ? 'text-white' : 'text-white/40'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                     </button>
                     <button onclick="switchTab('search')" class="p-3 active:scale-95">
-                        <svg class="w-6 h-6 ${activeTab === 'search' ? 'opacity-100 font-bold' : 'opacity-40'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <svg class="w-6 h-6 ${activeTab === 'search' ? 'text-white' : 'text-white/40'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </button>
                     <button onclick="switchTab('compose')" class="p-3 active:scale-95">
-                        <svg class="w-6 h-6 ${activeTab === 'compose' ? 'opacity-100 font-bold' : 'opacity-40'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        <svg class="w-6 h-6 ${activeTab === 'compose' ? 'text-white' : 'text-white/40'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     </button>
                     <button onclick="switchTab('profile')" class="p-3 active:scale-95">
-                        <svg class="w-6 h-6 ${activeTab === 'profile' ? 'opacity-100 font-bold' : 'opacity-40'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        <svg class="w-6 h-6 ${activeTab === 'profile' ? 'text-white' : 'text-white/40'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                     </button>
                 </nav>
             `;
@@ -731,7 +759,8 @@
             else if (tab === 'search') renderSearchView(container);
             else if (tab === 'compose') renderComposeView(container);
             else if (tab === 'messages') renderMessagesHubView(container);
-            else if (tab === 'chat') renderChatView(container);
+            else if (tab === 'dm') renderDmChatView(container, activeDmUid);
+            else if (tab === 'group') renderGroupChatView(container, activeGroupId);
             else if (tab === 'notifications') renderNotificationsView(container);
             else if (tab === 'settings') renderSettingsView(container);
             else if (tab === 'profile') renderProfileView(container, userProfile.uid);
@@ -742,7 +771,7 @@
             container.innerHTML = `
                 <div class="flex flex-col space-y-6 p-6">
                     <div id="posts-feed" class="space-y-6">
-                        <div class="text-center py-12 opacity-30 text-xs sm:text-sm">loading frequency...</div>
+                        <div class="text-center py-12 text-white/30 text-xs sm:text-sm">loading frequency...</div>
                     </div>
                 </div>
             `;
@@ -762,7 +791,7 @@
                 if (!feedEl) return;
 
                 if (posts.length === 0) {
-                    feedEl.innerHTML = `<div class="text-center py-16 opacity-40 text-xs sm:text-sm">no publications yet. publish your frequency.</div>`;
+                    feedEl.innerHTML = `<div class="text-center py-16 text-white/40 text-xs sm:text-sm">no publications yet. publish your frequency.</div>`;
                     return;
                 }
 
@@ -782,29 +811,27 @@
                                             @${post.authorUsername}
                                             ${getVerifyBadge({ followers: post.authorFollowers || [] })}
                                         </h4>
-                                        <p class="text-[10px] sm:text-xs opacity-30">${new Date(post.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                                        <p class="text-[10px] sm:text-xs text-white/30">${new Date(post.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-2">
                                     ${!isMyPost ? `
-                                        <div class="flex space-x-2">
-                                            <button onclick="openDirectMessage('${post.authorUid}', '${post.authorUsername}', '${post.authorAvatar || ''}')" class="px-4 py-2 text-xs font-semibold rounded-full glass-panel active:scale-95">dm</button>
-                                            <button onclick="toggleFollow('${post.authorUid}')" class="px-5 py-2 text-xs font-semibold rounded-full bg-white text-black dark:bg-white dark:text-black active:scale-95">
-                                                ${userProfile.following && userProfile.following.includes(post.authorUid) ? 'following' : 'follow'}
-                                            </button>
-                                        </div>
+                                        <button onclick="openDmWithUser('${post.authorUid}')" class="px-4 py-2 text-xs font-semibold rounded-full glass-panel active:scale-95">dm</button>
+                                        <button onclick="toggleFollow('${post.authorUid}')" class="px-5 py-2 text-xs font-semibold rounded-full bg-white text-black active:scale-95">
+                                            ${userProfile.following && userProfile.following.includes(post.authorUid) ? 'following' : 'follow'}
+                                        </button>
                                     ` : `
-                                        <button onclick="openEditModal('${post.id}', \`${post.caption || ''}\`)" class="p-2 opacity-60 active:scale-95" title="Edit">
+                                        <button onclick="openEditModal('${post.id}', \`${post.caption || ''}\`)" class="p-2 text-white/60 active:scale-95" title="Edit">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                         </button>
-                                        <button onclick="deletePost('${post.id}')" class="p-2 opacity-60 active:scale-95" title="Delete">
+                                        <button onclick="deletePost('${post.id}')" class="p-2 text-white/60 active:scale-95" title="Delete">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                         </button>
                                     `}
                                 </div>
                             </div>
 
-                            <p class="post-text text-xs sm:text-sm opacity-90 leading-relaxed whitespace-pre-wrap">${formatPostContent(post.caption)}</p>
+                            <p class="post-text text-xs sm:text-sm text-white/90 leading-relaxed whitespace-pre-wrap">${formatPostContent(post.caption)}</p>
 
                             ${post.media ? `
                                 <div class="w-full rounded-3xl overflow-hidden glass-panel">
@@ -816,8 +843,8 @@
                                 </div>
                             ` : ''}
 
-                            <div class="flex items-center space-x-6 pt-2 opacity-60 text-xs sm:text-sm">
-                                <button onclick="toggleLike('${post.id}', '${post.authorUid}')" class="flex items-center space-x-1.5 active:scale-95 ${isLiked ? 'opacity-100 font-bold' : ''}">
+                            <div class="flex items-center space-x-6 pt-2 text-white/60 text-xs sm:text-sm">
+                                <button onclick="toggleLike('${post.id}', '${post.authorUid}')" class="flex items-center space-x-1.5 active:scale-95 ${isLiked ? 'text-white font-bold' : ''}">
                                     <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
                                     <span>${post.likes ? post.likes.length : 0}</span>
                                 </button>
@@ -832,8 +859,8 @@
                                     <input type="text" id="comment-input-${post.id}" 
                                         onkeydown="handleCommentKeyDown(event, '${post.id}', '${post.authorUid}')"
                                         placeholder="comment or mention @username... (Enter to send)" 
-                                        class="flex-1 px-5 py-3 glass-panel rounded-full text-xs sm:text-sm focus:outline-none">
-                                    <button onclick="addComment('${post.id}', '${post.authorUid}')" class="px-5 py-3 bg-white text-black dark:bg-white dark:text-black text-xs sm:text-sm font-bold rounded-full active:scale-95">send</button>
+                                        class="flex-1 px-5 py-3 glass-panel rounded-full text-xs sm:text-sm text-white focus:outline-none">
+                                    <button onclick="addComment('${post.id}', '${post.authorUid}')" class="px-5 py-3 bg-white text-black text-xs sm:text-sm font-bold rounded-full active:scale-95">send</button>
                                 </div>
                                 <div class="space-y-2">
                                     ${post.comments ? post.comments.map((c, idx) => {
@@ -842,11 +869,11 @@
                                         return `
                                             <div class="glass-panel p-4 rounded-2xl flex items-center justify-between">
                                                 <div class="flex flex-col space-y-1">
-                                                    <span class="text-[10px] sm:text-xs font-bold opacity-70">@${c.username}</span>
-                                                    <p class="text-xs sm:text-sm opacity-90">${formatPostContent(c.text)}</p>
+                                                    <span class="text-[10px] sm:text-xs font-bold text-white/70">@${c.username}</span>
+                                                    <p class="text-xs sm:text-sm text-white/90">${formatPostContent(c.text)}</p>
                                                 </div>
                                                 <button onclick="toggleCommentLike('${post.id}', ${idx}, '${c.uid}')" 
-                                                    class="p-2 opacity-50 active:scale-95 flex items-center space-x-1 ${isCommentLiked ? 'opacity-100 font-bold' : ''}">
+                                                    class="p-2 text-white/50 active:scale-95 flex items-center space-x-1 ${isCommentLiked ? 'text-white font-bold' : ''}">
                                                     <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="${isCommentLiked ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
                                                     <span class="text-[10px] sm:text-xs">${cLikes.length}</span>
                                                 </button>
@@ -858,194 +885,264 @@
                         </div>
                     `;
                 }).join('');
-            });
+            }, (err) => console.error(err));
         }
 
-        // Direct Messaging Hub & Groups View
+        // --- DIRECT MESSAGES & GROUP HUB ---
+        window.openDmWithUser = function(targetUid) {
+            activeDmUid = targetUid;
+            switchTab('dm');
+        }
+
         function renderMessagesHubView(container) {
             container.innerHTML = `
                 <div class="flex flex-col space-y-6 p-6">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center space-x-3">
                             <button onclick="switchTab('feed')" class="p-2.5 rounded-full glass-panel active:scale-95" title="Back">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
                             </button>
                             <h2 class="text-base sm:text-lg font-black tracking-tight">messages & groups</h2>
                         </div>
-                        <button onclick="openCreateGroupModal()" class="px-4 py-2.5 bg-white text-black dark:bg-white dark:text-black font-bold text-xs rounded-full active:scale-95">create group</button>
+                        <button onclick="openCreateGroupModal()" class="px-4 py-2.5 bg-white text-black text-xs font-bold rounded-full active:scale-95">+ new group</button>
                     </div>
 
-                    <div class="space-y-3">
-                        <h3 class="text-[10px] font-bold opacity-40 uppercase tracking-widest">conversations</h3>
-                        <div id="chats-hub-list" class="space-y-3">
-                            <div class="text-center py-8 opacity-30 text-xs">loading chats...</div>
+                    <div class="space-y-4">
+                        <h3 class="text-[10px] font-bold text-white/50 uppercase tracking-widest">groups</h3>
+                        <div id="groups-hub-list" class="space-y-2">
+                            <div class="text-center py-6 text-white/30 text-xs">loading groups...</div>
+                        </div>
+
+                        <h3 class="text-[10px] font-bold text-white/50 uppercase tracking-widest pt-4">direct messages</h3>
+                        <div id="dms-hub-list" class="space-y-2">
+                            <div class="text-center py-6 text-white/30 text-xs">loading chats...</div>
                         </div>
                     </div>
                 </div>
             `;
-            fetchChatsHub();
+            fetchMessagesHubData();
         }
 
-        function fetchChatsHub() {
-            const chatsRef = collection(db, 'artifacts', appId, 'public', 'data', 'chats');
-            onSnapshot(chatsRef, (snapshot) => {
-                const conversations = [];
-                snapshot.forEach(docSnap => {
-                    const data = docSnap.data();
+        async function fetchMessagesHubData() {
+            // Fetch Groups
+            const groupsRef = collection(db, 'artifacts', appId, 'public', 'data', 'groups');
+            onSnapshot(groupsRef, (snap) => {
+                const groups = [];
+                snap.forEach(d => {
+                    const data = d.data();
                     if (data.members && data.members.includes(userProfile.uid)) {
-                        conversations.push({ id: docSnap.id, ...data });
+                        groups.push({ id: d.id, ...data });
                     }
                 });
-                conversations.sort((a,b) => (b.lastActivity || 0) - (a.lastActivity || 0));
-
-                const listEl = document.getElementById('chats-hub-list');
-                if (!listEl) return;
-
-                if (conversations.length === 0) {
-                    listEl.innerHTML = `<div class="text-center py-12 opacity-40 text-xs">no active conversations or groups yet. start a DM from search or profiles.</div>`;
-                    return;
-                }
-
-                listEl.innerHTML = conversations.map(chat => {
-                    const isGroup = chat.isGroup;
-                    const displayName = isGroup ? chat.groupName : chat.otherUsername;
-                    const displayAvatar = isGroup ? chat.groupAvatar : chat.otherAvatar;
-
-                    return `
-                        <div onclick="openChatRoom('${chat.id}', ${isGroup}, '${displayName}', '${displayAvatar || ''}', '${chat.otherUid || ''}')" 
-                            class="p-4 rounded-2xl glass-panel flex items-center justify-between cursor-pointer active:scale-98">
+                const gList = document.getElementById('groups-hub-list');
+                if (!gList) return;
+                if (groups.length === 0) {
+                    gList.innerHTML = `<div class="text-center py-4 text-white/40 text-xs">no groups joined</div>`;
+                } else {
+                    gList.innerHTML = groups.map(g => `
+                        <div onclick="openGroupChat('${g.id}')" class="p-4 rounded-2xl glass-panel flex items-center justify-between cursor-pointer active:scale-98">
                             <div class="flex items-center space-x-3">
-                                <div class="w-12 h-12 rounded-full glass-panel overflow-hidden flex items-center justify-center flex-shrink-0">
-                                    ${displayAvatar ? `<img src="${displayAvatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${displayName[0].toUpperCase()}</span>`}
+                                <div class="w-10 h-10 rounded-full glass-panel overflow-hidden flex items-center justify-center">
+                                    ${g.avatar ? `<img src="${g.avatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${g.name[0].toUpperCase()}</span>`}
                                 </div>
-                                <div class="flex flex-col space-y-0.5">
-                                    <span class="text-xs sm:text-sm font-bold flex items-center">
-                                        ${isGroup ? '' : '@'}${displayName}
-                                        ${isGroup ? '<span class="ml-2 px-2 py-0.5 glass-panel rounded-full text-[9px] opacity-70">group</span>' : ''}
-                                    </span>
-                                    <p class="text-[11px] opacity-50 truncate max-w-[200px] sm:max-w-xs">${chat.lastMessage || 'tap to view conversation'}</p>
+                                <div>
+                                    <h4 class="text-xs sm:text-sm font-bold text-white">${g.name}</h4>
+                                    <p class="text-[10px] text-white/40">${g.members.length} members</p>
                                 </div>
                             </div>
-                            <span class="text-[10px] opacity-40">${chat.lastActivity ? new Date(chat.lastActivity).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}</span>
+                            <span class="text-xs text-white/70">open</span>
                         </div>
-                    `;
-                }).join('');
-            });
-        }
-
-        window.openDirectMessage = async function(targetUid, targetUsername, targetAvatar) {
-            if (targetUid === userProfile.uid) return;
-            const chatsRef = collection(db, 'artifacts', appId, 'public', 'data', 'chats');
-            const chatsSnap = await getDocs(chatsRef);
-            
-            let existingChatId = null;
-            chatsSnap.forEach(d => {
-                const data = d.data();
-                if (!data.isGroup && data.members && data.members.includes(userProfile.uid) && data.members.includes(targetUid)) {
-                    existingChatId = d.id;
+                    `).join('');
                 }
             });
 
-            if (!existingChatId) {
-                const newChatRef = doc(chatsRef);
-                existingChatId = newChatRef.id;
-                await setDoc(newChatRef, {
-                    isGroup: false,
-                    members: [userProfile.uid, targetUid],
-                    otherUid: targetUid,
-                    otherUsername: targetUsername,
-                    otherAvatar: targetAvatar,
-                    lastMessage: 'conversation initialized',
-                    lastActivity: Date.now()
-                });
+            // Fetch DMs based on users interacted with
+            const usersSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'users'));
+            const dmsList = document.getElementById('dms-hub-list');
+            if (!dmsList) return;
+            const users = [];
+            usersSnap.forEach(d => {
+                const u = d.data();
+                if (u.uid !== userProfile.uid) users.push(u);
+            });
+
+            if (users.length === 0) {
+                dmsList.innerHTML = `<div class="text-center py-4 text-white/40 text-xs">no other users found</div>`;
+            } else {
+                dmsList.innerHTML = users.map(u => `
+                    <div onclick="openDmWithUser('${u.uid}')" class="p-4 rounded-2xl glass-panel flex items-center justify-between cursor-pointer active:scale-98">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full glass-panel overflow-hidden flex items-center justify-center">
+                                ${u.avatar ? `<img src="${u.avatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${u.username[0].toUpperCase()}</span>`}
+                            </div>
+                            <div>
+                                <h4 class="text-xs sm:text-sm font-bold text-white flex items-center">
+                                    @${u.username}
+                                    ${getVerifyBadge(u)}
+                                </h4>
+                                <p class="text-[10px] text-white/40">${u.name}</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-white/70">chat</span>
+                    </div>
+                `).join('');
             }
-
-            openChatRoom(existingChatId, false, targetUsername, targetAvatar, targetUid);
         }
 
-        window.openChatRoom = function(chatId, isGroup, name, avatar, otherUid) {
-            activeChatUser = { chatId, isGroup, name, avatar, otherUid };
-            switchTab('chat');
-        }
+        // --- GROUP CREATION ---
+        let groupAvatarBase64 = null;
+        window.openCreateGroupModal = async function() {
+            const modal = document.getElementById('create-group-modal');
+            const listEl = document.getElementById('group-member-selection-list');
+            modal.classList.remove('hidden');
+            listEl.innerHTML = `<div class="text-center py-4 text-white/40 text-xs">loading users...</div>`;
 
-        function renderChatView(container) {
-            if (!activeChatUser) {
-                switchTab('messages');
+            const usersSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'users'));
+            const users = [];
+            usersSnap.forEach(d => {
+                const u = d.data();
+                if (u.uid !== userProfile.uid) users.push(u);
+            });
+
+            if (users.length === 0) {
+                listEl.innerHTML = `<div class="text-center py-4 text-white/40 text-xs">no other users available</div>`;
                 return;
             }
 
-            container.innerHTML = `
-                <div class="flex flex-col h-[calc(100vh-140px)] p-6 space-y-4">
-                    <div class="flex items-center justify-between pb-3 border-b opacity-20">
-                        <div class="flex items-center space-x-3 cursor-pointer" onclick="${!activeChatUser.isGroup ? `viewUserProfile('${activeChatUser.otherUid}')` : ''}">
-                            <div class="w-10 h-10 rounded-full glass-panel overflow-hidden flex items-center justify-center">
-                                ${activeChatUser.avatar ? `<img src="${activeChatUser.avatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${activeChatUser.name[0].toUpperCase()}</span>`}
-                            </div>
-                            <div class="flex flex-col">
-                                <h3 class="text-xs sm:text-sm font-bold">${!activeChatUser.isGroup ? '@' : ''}${activeChatUser.name}</h3>
-                                <span class="text-[10px] opacity-40">${activeChatUser.isGroup ? 'group channel' : 'direct message'}</span>
-                            </div>
+            listEl.innerHTML = users.map(u => `
+                <label class="p-3 rounded-2xl glass-panel flex items-center justify-between cursor-pointer">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full glass-panel overflow-hidden flex items-center justify-center">
+                            ${u.avatar ? `<img src="${u.avatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${u.username[0].toUpperCase()}</span>`}
                         </div>
-                        <div class="flex items-center space-x-2">
-                            ${activeChatUser.isGroup ? `<button onclick="deleteGroup('${activeChatUser.chatId}')" class="px-3 py-1.5 bg-red-600 text-white font-bold text-[10px] rounded-full active:scale-95">delete group</button>` : ''}
-                            <button onclick="startDetailedVideoCall()" class="p-2.5 rounded-full glass-panel active:scale-95" title="Detailed Video Call">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                            </button>
-                            <button onclick="switchTab('messages')" class="p-2.5 rounded-full glass-panel active:scale-95">✕</button>
-                        </div>
+                        <span class="text-xs font-bold">@${u.username}</span>
                     </div>
-
-                    <div id="chat-messages-container" class="flex-1 overflow-y-auto space-y-3 pr-2">
-                        <div class="text-center py-12 opacity-30 text-xs">loading messages...</div>
-                    </div>
-
-                    <div class="flex space-x-2 pt-2">
-                        <input type="text" id="chat-msg-input" onkeydown="handleChatKeyDown(event)" placeholder="send message... (Enter to send)" 
-                            class="flex-1 px-5 py-3.5 glass-panel rounded-full text-xs sm:text-sm focus:outline-none">
-                        <button onclick="sendChatMessage()" class="px-6 py-3.5 bg-white text-black dark:bg-white dark:text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">send</button>
-                    </div>
-                </div>
-            `;
-            fetchChatMessages();
+                    <input type="checkbox" value="${u.uid}" class="group-member-checkbox w-4 h-4 rounded bg-transparent border-white/30">
+                </label>
+            `).join('');
         }
 
-        window.deleteGroup = async function(chatId) {
-            if (!confirm("Are you sure you want to delete this group?")) return;
-            try {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', chatId));
-                showModal("Group deleted successfully.");
-                switchTab('messages');
-            } catch(e) {
-                showModal("Failed to delete group.");
+        window.closeCreateGroupModal = function() {
+            document.getElementById('create-group-modal').classList.add('hidden');
+            groupAvatarBase64 = null;
+        }
+
+        window.handleGroupAvatarUpload = function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    groupAvatarBase64 = evt.target.result;
+                    document.getElementById('group-avatar-preview').innerHTML = `<img src="${groupAvatarBase64}" class="w-full h-full object-cover">`;
+                };
+                reader.readAsDataURL(file);
             }
         }
 
-        function fetchChatMessages() {
-            if (!activeChatUser) return;
-            const msgsRef = collection(db, 'artifacts', appId, 'public', 'data', 'chats', activeChatUser.chatId, 'messages');
-            onSnapshot(msgsRef, (snapshot) => {
-                const msgs = [];
-                snapshot.forEach(docSnap => {
-                    msgs.push({ id: docSnap.id, ...docSnap.data() });
-                });
-                msgs.sort((a,b) => a.createdAt - b.createdAt);
+        window.confirmCreateGroup = async function() {
+            const name = document.getElementById('group-name-input').value.trim();
+            if (!name) {
+                showModal("Please enter a group name.");
+                return;
+            }
 
-                const container = document.getElementById('chat-messages-container');
+            const checkboxes = document.querySelectorAll('.group-member-checkbox:checked');
+            const members = [userProfile.uid];
+            checkboxes.forEach(cb => members.push(cb.value));
+
+            const newGroup = {
+                name,
+                avatar: groupAvatarBase64 || '',
+                creatorUid: userProfile.uid,
+                members,
+                createdAt: Date.now()
+            };
+
+            const ref = doc(collection(db, 'artifacts', appId, 'public', 'data', 'groups'));
+            await setDoc(ref, newGroup);
+            closeCreateGroupModal();
+            showModal("Group created successfully!");
+            switchTab('messages');
+        }
+
+        // --- DM CHAT & VIDEO CALL ---
+        function renderDmChatView(container, targetUid) {
+            container.innerHTML = `
+                <div class="flex flex-col h-[85vh] p-4 sm:p-6 space-y-4">
+                    <div id="dm-header" class="flex items-center justify-between glass-panel p-4 rounded-3xl">
+                        <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('messages')">
+                            <button class="p-2 rounded-full glass-panel active:scale-95">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                            </button>
+                            <div id="dm-target-info" class="flex items-center space-x-2">
+                                <span class="text-xs sm:text-sm font-bold">direct message</span>
+                            </div>
+                        </div>
+                        <button onclick="startVideoCall('${targetUid}')" class="p-3 rounded-full glass-panel active:scale-95 text-white" title="Detailed Video Call">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        </button>
+                    </div>
+
+                    <div id="dm-messages-container" class="flex-1 overflow-y-auto space-y-3 p-4 glass-panel rounded-3xl flex flex-col">
+                        <div class="text-center py-12 text-white/30 text-xs">loading chat...</div>
+                    </div>
+
+                    <div class="flex space-x-2">
+                        <input type="text" id="dm-input" onkeydown="handleDmKeyDown(event, '${targetUid}')" placeholder="secure message... (Enter to send)" 
+                            class="flex-1 px-5 py-4 glass-panel rounded-full text-white placeholder-white/30 text-xs sm:text-sm focus:outline-none">
+                        <button onclick="sendDmMessage('${targetUid}')" class="px-6 py-4 bg-white text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">send</button>
+                    </div>
+                </div>
+            `;
+            loadTargetUserInfo(targetUid);
+            fetchDmMessages(targetUid);
+        }
+
+        async function loadTargetUserInfo(targetUid) {
+            const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', targetUid));
+            if (snap.exists()) {
+                const u = snap.data();
+                const info = document.getElementById('dm-target-info');
+                if (info) {
+                    info.innerHTML = `
+                        <div class="w-8 h-8 rounded-full glass-panel overflow-hidden flex items-center justify-center">
+                            ${u.avatar ? `<img src="${u.avatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${u.username[0].toUpperCase()}</span>`}
+                        </div>
+                        <span class="text-xs sm:text-sm font-bold">@${u.username}</span>
+                    `;
+                }
+            }
+        }
+
+        function fetchDmMessages(targetUid) {
+            const ref = collection(db, 'artifacts', appId, 'public', 'data', 'direct_messages');
+            onSnapshot(ref, (snap) => {
+                const msgs = [];
+                snap.forEach(d => {
+                    const m = d.data();
+                    if ((m.senderUid === userProfile.uid && m.receiverUid === targetUid) ||
+                        (m.senderUid === targetUid && m.receiverUid === userProfile.uid)) {
+                        msgs.push({ id: d.id, ...m });
+                    }
+                });
+                msgs.sort((a, b) => a.createdAt - b.createdAt);
+
+                const container = document.getElementById('dm-messages-container');
                 if (!container) return;
 
                 if (msgs.length === 0) {
-                    container.innerHTML = `<div class="text-center py-12 opacity-40 text-xs">no messages in this conversation yet</div>`;
+                    container.innerHTML = `<div class="text-center py-12 text-white/30 text-xs">no encrypted messages yet</div>`;
                     return;
                 }
 
                 container.innerHTML = msgs.map(m => {
-                    const isMe = m.senderUid === userProfile.uid;
+                    const isSelf = m.senderUid === userProfile.uid;
                     return `
-                        <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} space-y-1">
-                            <span class="text-[9px] opacity-40 px-1">@${m.senderUsername}</span>
-                            <div class="max-w-[80%] p-4 rounded-2xl ${isMe ? 'bg-white text-black dark:bg-white dark:text-black font-medium' : 'glass-panel'} text-xs sm:text-sm">
+                        <div class="flex flex-col ${isSelf ? 'items-end' : 'items-start'} space-y-1">
+                            <div class="max-w-[80%] p-4 rounded-2xl ${isSelf ? 'bg-white text-black font-medium' : 'glass-panel text-white'} text-xs sm:text-sm">
                                 ${formatPostContent(m.text)}
                             </div>
+                            <span class="text-[9px] text-white/40">${new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         </div>
                     `;
                 }).join('');
@@ -1053,216 +1150,567 @@
             });
         }
 
-        window.handleChatKeyDown = function(event) {
+        window.handleDmKeyDown = function(event, targetUid) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
-                sendChatMessage();
+                sendDmMessage(targetUid);
             }
         }
 
-        window.sendChatMessage = async function() {
-            const input = document.getElementById('chat-msg-input');
+        window.sendDmMessage = async function(targetUid) {
+            const input = document.getElementById('dm-input');
             const text = input.value.trim();
-            if (!text || !activeChatUser) return;
+            if (!text) return;
 
-            const msgRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'chats', activeChatUser.chatId, 'messages'));
-            await setDoc(msgRef, {
+            const newMsg = {
                 senderUid: userProfile.uid,
-                senderUsername: userProfile.username,
+                receiverUid: targetUid,
                 text,
                 createdAt: Date.now()
-            });
+            };
 
-            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'chats', activeChatUser.chatId), {
-                lastMessage: `@${userProfile.username}: ${text}`,
-                lastActivity: Date.now()
-            });
-
+            await setDoc(doc(collection(db, 'artifacts', appId, 'public', 'data', 'direct_messages')), newMsg);
+            await addNotification(targetUid, `@${userProfile.username} sent you a direct message`);
+            sendDeviceNotification("spatialetwo", `@${userProfile.username} sent you a DM`);
             input.value = '';
-            sendDeviceNotification("spatialetwo", `@${userProfile.username} sent you a message`);
         }
 
-        window.startDetailedVideoCall = async function() {
-            const modal = document.getElementById('video-call-modal');
-            document.getElementById('call-target-name').innerText = activeChatUser.name;
-            modal.classList.remove('hidden');
-
-            try {
-                callLocalStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                document.getElementById('local-video-preview').srcObject = callLocalStream;
-
-                callPeerConnection = new RTCPeerConnection({
-                    iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
-                });
-
-                callLocalStream.getTracks().forEach(track => callPeerConnection.addTrack(track, callLocalStream));
-
-                callPeerConnection.ontrack = (event) => {
-                    document.getElementById('remote-video-stream').srcObject = event.streams[0];
-                    document.getElementById('call-status-overlay').classList.add('hidden');
-                };
-
-                setTimeout(() => {
-                    document.getElementById('remote-video-stream').srcObject = callLocalStream;
-                    document.getElementById('call-status-overlay').classList.add('hidden');
-                }, 1500);
-
-            } catch(e) {
-                showModal("Camera or microphone access denied/unavailable.");
-                modal.classList.add('hidden');
-            }
+        // --- GROUP CHAT & VIDEO CALL ---
+        window.openGroupChat = function(groupId) {
+            activeGroupId = groupId;
+            switchTab('group');
         }
 
-        window.toggleCallMute = function() {
-            if (callLocalStream) {
-                const audioTrack = callLocalStream.getAudioTracks()[0];
-                if (audioTrack) {
-                    audioTrack.enabled = !audioTrack.enabled;
-                    isCallMuted = !audioTrack.enabled;
-                    document.getElementById('call-mute-btn').innerText = isCallMuted ? 'unmute mic' : 'mute mic';
+        function renderGroupChatView(container, groupId) {
+            container.innerHTML = `
+                <div class="flex flex-col h-[85vh] p-4 sm:p-6 space-y-4">
+                    <div id="group-header" class="flex items-center justify-between glass-panel p-4 rounded-3xl">
+                        <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('messages')">
+                            <button class="p-2 rounded-full glass-panel active:scale-95">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                            </button>
+                            <div id="group-target-info" class="flex items-center space-x-2">
+                                <span class="text-xs sm:text-sm font-bold">group chat</span>
+                            </div>
+                        </div>
+                        <button onclick="startGroupVideoCall('${groupId}')" class="p-3 rounded-full glass-panel active:scale-95 text-white" title="Detailed Group Video Call">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        </button>
+                    </div>
+
+                    <div id="group-messages-container" class="flex-1 overflow-y-auto space-y-3 p-4 glass-panel rounded-3xl flex flex-col">
+                        <div class="text-center py-12 text-white/30 text-xs">loading group chat...</div>
+                    </div>
+
+                    <div class="flex space-x-2">
+                        <input type="text" id="group-input" onkeydown="handleGroupKeyDown(event, '${groupId}')" placeholder="group message... (Enter to send)" 
+                            class="flex-1 px-5 py-4 glass-panel rounded-full text-white placeholder-white/30 text-xs sm:text-sm focus:outline-none">
+                        <button onclick="sendGroupMessage('${groupId}')" class="px-6 py-4 bg-white text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">send</button>
+                    </div>
+                </div>
+            `;
+            loadGroupInfo(groupId);
+            fetchGroupMessages(groupId);
+        }
+
+        async function loadGroupInfo(groupId) {
+            const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'groups', groupId));
+            if (snap.exists()) {
+                const g = snap.data();
+                const info = document.getElementById('group-target-info');
+                if (info) {
+                    info.innerHTML = `
+                        <div class="w-8 h-8 rounded-full glass-panel overflow-hidden flex items-center justify-center">
+                            ${g.avatar ? `<img src="${g.avatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${g.name[0].toUpperCase()}</span>`}
+                        </div>
+                        <span class="text-xs sm:text-sm font-bold">${g.name}</span>
+                    `;
                 }
             }
         }
 
+        function fetchGroupMessages(groupId) {
+            const ref = collection(db, 'artifacts', appId, 'public', 'data', 'group_messages');
+            onSnapshot(ref, (snap) => {
+                const msgs = [];
+                snap.forEach(d => {
+                    const m = d.data();
+                    if (m.groupId === groupId) {
+                        msgs.push({ id: d.id, ...m });
+                    }
+                });
+                msgs.sort((a, b) => a.createdAt - b.createdAt);
+
+                const container = document.getElementById('group-messages-container');
+                if (!container) return;
+
+                if (msgs.length === 0) {
+                    container.innerHTML = `<div class="text-center py-12 text-white/30 text-xs">no group messages yet</div>`;
+                    return;
+                }
+
+                container.innerHTML = msgs.map(m => {
+                    const isSelf = m.senderUid === userProfile.uid;
+                    return `
+                        <div class="flex flex-col ${isSelf ? 'items-end' : 'items-start'} space-y-1">
+                            <span class="text-[9px] text-white/50">@${m.senderUsername}</span>
+                            <div class="max-w-[80%] p-4 rounded-2xl ${isSelf ? 'bg-white text-black font-medium' : 'glass-panel text-white'} text-xs sm:text-sm">
+                                ${formatPostContent(m.text)}
+                            </div>
+                            <span class="text-[9px] text-white/40">${new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        </div>
+                    `;
+                }).join('');
+                container.scrollTop = container.scrollHeight;
+            });
+        }
+
+        window.handleGroupKeyDown = function(event, groupId) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendGroupMessage(groupId);
+            }
+        }
+
+        window.sendGroupMessage = async function(groupId) {
+            const input = document.getElementById('group-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const newMsg = {
+                groupId,
+                senderUid: userProfile.uid,
+                senderUsername: userProfile.username,
+                text,
+                createdAt: Date.now()
+            };
+
+            await setDoc(doc(collection(db, 'artifacts', appId, 'public', 'data', 'group_messages')), newMsg);
+            input.value = '';
+        }
+
+        // --- DETAILED VIDEO CALL CONTROLS ---
+        window.startVideoCall = async function(targetUid) {
+            const modal = document.getElementById('video-call-modal');
+            modal.classList.remove('hidden');
+            document.getElementById('video-call-title').innerText = "secure video transmission";
+            startCallStreams();
+        }
+
+        window.startGroupVideoCall = async function(groupId) {
+            const modal = document.getElementById('video-call-modal');
+            modal.classList.remove('hidden');
+            document.getElementById('video-call-title').innerText = "secure group video conference";
+            startCallStreams();
+        }
+
+        function startCallStreams() {
+            callSeconds = 0;
+            document.getElementById('video-call-timer').innerText = "00:00";
+            if (callTimerInterval) clearInterval(callTimerInterval);
+            callTimerInterval = setInterval(() => {
+                callSeconds++;
+                const mins = String(Math.floor(callSeconds / 60)).padStart(2, '0');
+                const secs = String(callSeconds % 60).padStart(2, '0');
+                document.getElementById('video-call-timer').innerText = `${mins}:${secs}`;
+            }, 1000);
+
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                .then(stream => {
+                    callStream = stream;
+                    document.getElementById('call-local-video').srcObject = stream;
+                    document.getElementById('call-remote-video').srcObject = stream; // Mirror simulation
+                })
+                .catch(() => {
+                    showModal("Camera/Microphone access required for video call.");
+                });
+        }
+
         window.endVideoCall = function() {
-            if (callLocalStream) {
-                callLocalStream.getTracks().forEach(t => t.stop());
+            if (callStream) {
+                callStream.getTracks().forEach(t => t.stop());
             }
-            if (callPeerConnection) {
-                callPeerConnection.close();
-            }
+            if (callTimerInterval) clearInterval(callTimerInterval);
             document.getElementById('video-call-modal').classList.add('hidden');
         }
 
-        let selectedGroupMembers = [];
-        let groupAvatarBase64 = null;
-        let groupBannerBase64 = null;
+        window.toggleCallMute = function() {
+            if (callStream) {
+                callStream.getAudioTracks().forEach(t => t.enabled = !t.enabled);
+                showModal("Toggled microphone audio.");
+            }
+        }
 
-        window.openCreateGroupModal = async function() {
-            const modal = document.getElementById('user-list-modal');
-            const title = document.getElementById('user-list-title');
-            const content = document.getElementById('user-list-content');
+        window.toggleCallVideo = function() {
+            if (callStream) {
+                callStream.getVideoTracks().forEach(t => t.enabled = !t.enabled);
+                showModal("Toggled camera video feed.");
+            }
+        }
 
-            title.innerText = 'create group channel';
-            content.innerHTML = `<div class="text-center py-6 opacity-40 text-xs">loading users...</div>`;
-            modal.classList.remove('hidden');
+        function formatPostContent(text) {
+            if (!text) return '';
+            return text.replace(/(#\w+|@\w+)/g, '<span class="text-white font-bold">$1</span>');
+        }
 
-            const usersSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'users'));
-            const eligibleUsers = [];
-            usersSnap.forEach(d => {
-                const u = d.data();
-                if (u.uid !== userProfile.uid) eligibleUsers.push(u);
-            });
+        window.openEditModal = function(id, currentCaption) {
+            activeEditingPostId = id;
+            document.getElementById('edit-post-caption').value = currentCaption;
+            document.getElementById('edit-post-modal').classList.remove('hidden');
+        }
 
-            selectedGroupMembers = [];
+        window.closeEditModal = function() {
+            document.getElementById('edit-post-modal').classList.add('hidden');
+            activeEditingPostId = null;
+        }
 
-            content.innerHTML = `
-                <div class="space-y-4">
-                    <input type="text" id="group-name-input" placeholder="group name" required 
-                        class="w-full px-5 py-3.5 glass-panel rounded-full placeholder-opacity-30 text-xs focus:outline-none">
+        window.savePostEdit = async function() {
+            if (!activeEditingPostId) return;
+            const newCaption = document.getElementById('edit-post-caption').value.trim();
+            const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', activeEditingPostId);
+            await updateDoc(postRef, { caption: newCaption });
+            closeEditModal();
+            showModal("Publication updated.");
+        }
 
-                    <div class="flex space-x-2">
-                        <label class="flex-1 text-xs font-semibold py-3 glass-panel rounded-full text-center cursor-pointer active:scale-95">
-                            group pfp
-                            <input type="file" accept="image/*" onchange="handleGroupAvatar(event)" class="hidden">
-                        </label>
-                        <label class="flex-1 text-xs font-semibold py-3 glass-panel rounded-full text-center cursor-pointer active:scale-95">
-                            group banner
-                            <input type="file" accept="image/*" onchange="handleGroupBanner(event)" class="hidden">
-                        </label>
+        window.deletePost = async function(id) {
+            try {
+                const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', id);
+                await deleteDoc(postRef);
+                showModal("Publication removed.");
+            } catch(e) {
+                console.error("Delete failed:", e);
+            }
+        }
+
+        window.handleCommentKeyDown = function(event, postId, authorUid) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                addComment(postId, authorUid);
+            }
+        }
+
+        window.toggleComments = function(postId) {
+            const el = document.getElementById(`comments-section-${postId}`);
+            if (el) el.classList.toggle('hidden');
+        }
+
+        window.toggleCommentLike = async function(postId, commentIndex, commentAuthorUid) {
+            if (commentAuthorUid === userProfile.uid) {
+                showModal("You cannot like your own comment.");
+                return;
+            }
+
+            const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
+            const postSnap = await getDoc(postRef);
+            if (!postSnap.exists()) return;
+
+            const data = postSnap.data();
+            const comments = data.comments || [];
+            if (!comments[commentIndex]) return;
+
+            let cLikes = comments[commentIndex].likes || [];
+            if (cLikes.includes(userProfile.uid)) {
+                cLikes = cLikes.filter(id => id !== userProfile.uid);
+            } else {
+                cLikes.push(userProfile.uid);
+                await addNotification(commentAuthorUid, `@${userProfile.username} liked your comment`);
+                sendDeviceNotification("spatialetwo", `@${userProfile.username} liked your comment`);
+            }
+            comments[commentIndex].likes = cLikes;
+
+            await updateDoc(postRef, { comments });
+        }
+
+        let composeMediaBase64 = null;
+        let composeRatio = '1/1';
+        let isVideoMedia = false;
+
+        function renderComposeView(container) {
+            container.innerHTML = `
+                <div class="flex flex-col space-y-6 p-6">
+                    <div class="flex items-center space-x-3">
+                        <button onclick="switchTab('feed')" class="p-2.5 rounded-full glass-panel active:scale-95" title="Back">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                        </button>
+                        <h2 class="text-base sm:text-lg font-black tracking-tight">new frequency</h2>
                     </div>
 
-                    <div id="group-previews" class="flex space-x-3 hidden">
-                        <div id="gp-avatar-prev" class="w-12 h-12 rounded-full glass-panel overflow-hidden"></div>
-                        <div id="gp-banner-prev" class="flex-1 h-12 rounded-xl glass-panel overflow-hidden"></div>
-                    </div>
+                    <textarea id="post-caption" 
+                        onkeydown="handleComposeKeyDown(event)"
+                        placeholder="what's happening? use #hashtags and @mentions... (Enter to publish)" rows="4" 
+                        class="w-full p-5 glass-panel rounded-3xl text-white placeholder-white/30 text-xs sm:text-sm focus:outline-none resize-none"></textarea>
+                    
+                    <div class="flex flex-col space-y-4">
+                        <div class="flex items-center space-x-2">
+                            <label class="flex-1 text-center text-xs font-semibold px-4 py-3.5 rounded-full glass-panel cursor-pointer active:scale-95">
+                                gallery
+                                <input type="file" id="post-media-file" accept="image/*,video/*" onchange="handlePostMediaUpload(event)" class="hidden">
+                            </label>
+                            <button type="button" onclick="openCameraModal()" class="flex-1 text-xs font-semibold px-4 py-3.5 rounded-full glass-panel active:scale-95">
+                                camera
+                            </button>
+                        </div>
 
-                    <h4 class="text-[10px] font-bold opacity-40 uppercase tracking-widest pt-2">select members</h4>
-                    <div class="space-y-2 max-h-48 overflow-y-auto">
-                        ${eligibleUsers.map(u => `
-                            <div onclick="toggleGroupMemberSelection('${u.uid}', this)" class="p-3 rounded-2xl glass-panel flex items-center justify-between cursor-pointer active:scale-98">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 rounded-full glass-panel overflow-hidden flex items-center justify-center">
-                                        ${u.avatar ? `<img src="${u.avatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${u.username[0].toUpperCase()}</span>`}
-                                    </div>
-                                    <span class="text-xs font-bold">@${u.username}</span>
-                                </div>
-                                <span class="checkbox-indicator text-xs opacity-40">select</span>
+                        <!-- Aspect Ratio Selector Controls -->
+                        <div class="glass-panel p-3 rounded-2xl space-y-2">
+                            <span class="text-[10px] font-semibold text-white/50 px-2 uppercase tracking-wider">aspect ratio</span>
+                            <div class="flex space-x-2">
+                                <button type="button" id="ratio-btn-1-1" onclick="setPostRatio('1/1')" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-black">1:1 Square</button>
+                                <button type="button" id="ratio-btn-16-9" onclick="setPostRatio('16/9')" class="flex-1 py-2.5 rounded-xl text-xs font-bold glass-panel text-white/70">16:9 Wide</button>
+                                <button type="button" id="ratio-btn-4-5" onclick="setPostRatio('4/5')" class="flex-1 py-2.5 rounded-xl text-xs font-bold glass-panel text-white/70">4:5 Portrait</button>
                             </div>
-                        `).join('')}
+                        </div>
                     </div>
 
-                    <button onclick="finalizeGroupCreation()" class="w-full py-4 bg-white text-black dark:bg-white dark:text-black font-bold text-xs rounded-full active:scale-95">create group</button>
+                    <div id="compose-preview" class="w-full hidden aspect-square rounded-3xl overflow-hidden glass-panel relative">
+                        <img id="compose-preview-img" class="w-full h-full object-cover hidden">
+                        <video id="compose-preview-vid" controls class="w-full h-full object-cover hidden"></video>
+                        <button onclick="removeComposeMedia()" class="absolute top-4 right-4 px-3.5 py-1.5 bg-black/80 text-white text-xs font-bold rounded-full">remove</button>
+                    </div>
+
+                    <button onclick="publishPost()" class="w-full py-4 bg-white text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">publish</button>
                 </div>
             `;
         }
 
-        window.handleGroupAvatar = function(e) {
-            const file = e.target.files[0];
+        window.setPostRatio = function(ratio) {
+            composeRatio = ratio;
+            ['1-1', '16-9', '4-5'].forEach(r => {
+                const btn = document.getElementById(`ratio-btn-${r}`);
+                if (btn) {
+                    btn.className = (r.replace('-', '/') === ratio) 
+                        ? "flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-black"
+                        : "flex-1 py-2.5 rounded-xl text-xs font-bold glass-panel text-white/70";
+                }
+            });
+
+            const preview = document.getElementById('compose-preview');
+            if (preview) {
+                preview.style.aspectRatio = ratio === '16/9' ? '16/9' : ratio === '4/5' ? '4/5' : '1/1';
+            }
+        }
+
+        window.handleComposeKeyDown = function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                publishPost();
+            }
+        }
+
+        window.handlePostMediaUpload = function(event) {
+            const file = event.target.files[0];
             if (file) {
+                isVideoMedia = file.type.startsWith('video');
                 const reader = new FileReader();
-                reader.onload = function(evt) {
-                    groupAvatarBase64 = evt.target.result;
-                    document.getElementById('group-previews').classList.remove('hidden');
-                    document.getElementById('gp-avatar-prev').innerHTML = `<img src="${groupAvatarBase64}" class="w-full h-full object-cover">`;
+                reader.onload = function(e) {
+                    composeMediaBase64 = e.target.result;
+                    const preview = document.getElementById('compose-preview');
+                    const img = document.getElementById('compose-preview-img');
+                    const vid = document.getElementById('compose-preview-vid');
+
+                    if (isVideoMedia) {
+                        img.classList.add('hidden');
+                        vid.src = composeMediaBase64;
+                        vid.classList.remove('hidden');
+                    } else {
+                        vid.classList.add('hidden');
+                        img.src = composeMediaBase64;
+                        img.classList.remove('hidden');
+                    }
+                    if (preview) preview.classList.remove('hidden');
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        window.handleGroupBanner = function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    groupBannerBase64 = evt.target.result;
-                    document.getElementById('group-previews').classList.remove('hidden');
-                    document.getElementById('gp-banner-prev').innerHTML = `<img src="${groupBannerBase64}" class="w-full h-full object-cover">`;
-                };
-                reader.readAsDataURL(file);
-            }
+        window.removeComposeMedia = function() {
+            composeMediaBase64 = null;
+            isVideoMedia = false;
+            const preview = document.getElementById('compose-preview');
+            if (preview) preview.classList.add('hidden');
         }
 
-        window.toggleGroupMemberSelection = function(uid, el) {
-            const idx = selectedGroupMembers.indexOf(uid);
-            const indicator = el.querySelector('.checkbox-indicator');
-            if (idx > -1) {
-                selectedGroupMembers.splice(idx, 1);
-                indicator.innerText = 'select';
-                el.classList.remove('opacity-80');
-            } else {
-                selectedGroupMembers.push(uid);
-                indicator.innerText = '✓ selected';
-                el.classList.add('opacity-80');
-            }
-        }
-
-        window.finalizeGroupCreation = async function() {
-            const nameInput = document.getElementById('group-name-input');
-            const groupName = nameInput ? nameInput.value.trim() : '';
-
-            if (!groupName) {
-                showModal("Please provide a group name.");
+        window.publishPost = async function() {
+            const caption = document.getElementById('post-caption').value.trim();
+            if (!caption && !composeMediaBase64) {
+                showModal("Please add text or media to publish.");
                 return;
             }
 
-            const members = [userProfile.uid, ...selectedGroupMembers];
-            const chatsRef = collection(db, 'artifacts', appId, 'public', 'data', 'chats');
-            const newChatRef = doc(chatsRef);
+            try {
+                const newPost = {
+                    authorUid: userProfile.uid,
+                    authorUsername: userProfile.username,
+                    authorAvatar: userProfile.avatar || '',
+                    authorFollowers: userProfile.followers || [],
+                    caption,
+                    media: composeMediaBase64 || '',
+                    isVideo: isVideoMedia,
+                    ratio: composeRatio,
+                    likes: [],
+                    comments: [],
+                    createdAt: Date.now()
+                };
 
-            await setDoc(newChatRef, {
-                isGroup: true,
-                groupName,
-                groupAvatar: groupAvatarBase64 || '',
-                groupBanner: groupBannerBase64 || '',
-                members,
-                lastMessage: `group created by @${userProfile.username}`,
-                lastActivity: Date.now()
+                await setDoc(doc(collection(db, 'artifacts', appId, 'public', 'data', 'posts')), newPost);
+                composeMediaBase64 = null;
+                isVideoMedia = false;
+                switchTab('feed');
+            } catch (e) {
+                console.error("Publishing error:", e);
+                showModal("Error publishing publication.");
+            }
+        }
+
+        window.toggleLike = async function(postId, authorUid) {
+            const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
+            const postSnap = await getDoc(postRef);
+            if (!postSnap.exists()) return;
+            const data = postSnap.data();
+            let likes = data.likes || [];
+
+            if (likes.includes(userProfile.uid)) {
+                likes = likes.filter(id => id !== userProfile.uid);
+            } else {
+                likes.push(userProfile.uid);
+                if (authorUid !== userProfile.uid) {
+                    await addNotification(authorUid, `@${userProfile.username} liked your publication`);
+                    sendDeviceNotification("spatialetwo", `@${userProfile.username} liked your post`);
+                }
+            }
+            await updateDoc(postRef, { likes });
+        }
+
+        window.addComment = async function(postId, authorUid) {
+            const input = document.getElementById(`comment-input-${postId}`);
+            const text = input.value.trim();
+            if (!text) return;
+
+            const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
+            const postSnap = await getDoc(postRef);
+            if (!postSnap.exists()) return;
+            const data = postSnap.data();
+            const comments = data.comments || [];
+
+            comments.push({
+                uid: userProfile.uid,
+                username: userProfile.username,
+                text,
+                likes: [],
+                createdAt: Date.now()
             });
 
-            closeUserListModal();
-            showModal("Group created successfully.");
-            switchTab('messages');
+            await updateDoc(postRef, { comments });
+            if (authorUid !== userProfile.uid) {
+                await addNotification(authorUid, `@${userProfile.username} commented on your publication`);
+                sendDeviceNotification("spatialetwo", `@${userProfile.username} commented on your post`);
+            }
+            input.value = '';
+        }
+
+        window.toggleFollow = async function(targetUid) {
+            if (targetUid === userProfile.uid) return;
+            const targetRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', targetUid);
+            const myRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', userProfile.uid);
+
+            const targetSnap = await getDoc(targetRef);
+            const mySnap = await getDoc(myRef);
+            if (!targetSnap.exists() || !mySnap.exists()) return;
+
+            const targetData = targetSnap.data();
+            const myData = mySnap.data();
+
+            let myFollowing = myData.following || [];
+            let targetFollowers = targetData.followers || [];
+
+            if (myFollowing.includes(targetUid)) {
+                myFollowing = myFollowing.filter(id => id !== targetUid);
+                targetFollowers = targetFollowers.filter(id => id !== userProfile.uid);
+            } else {
+                myFollowing.push(targetUid);
+                targetFollowers.push(userProfile.uid);
+                
+                await addNotification(targetUid, `@${userProfile.username} started following you`);
+                sendDeviceNotification("spatialetwo", `@${userProfile.username} started following you`);
+            }
+
+            await updateDoc(myRef, { following: myFollowing });
+            await updateDoc(targetRef, { followers: targetFollowers });
+            
+            userProfile.following = myFollowing;
+            saveLocalAccount(userProfile);
+            renderMainApp();
+        }
+
+        async function addNotification(targetUid, text) {
+            const notifRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'notifications'));
+            await setDoc(notifRef, {
+                targetUid,
+                senderUid: userProfile.uid,
+                text,
+                read: false,
+                createdAt: Date.now()
+            });
+        }
+
+        function listenToNotifications() {
+            const notifsRef = collection(db, 'artifacts', appId, 'public', 'data', 'notifications');
+            onSnapshot(notifsRef, (snapshot) => {
+                let count = 0;
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if (data.targetUid === userProfile.uid && !data.read) {
+                        count++;
+                    }
+                });
+                const badge = document.getElementById('notif-badge');
+                if (badge) {
+                    if (count > 0) badge.classList.remove('hidden');
+                    else badge.classList.add('hidden');
+                }
+            });
+        }
+
+        function renderNotificationsView(container) {
+            container.innerHTML = `
+                <div class="flex flex-col space-y-6 p-6">
+                    <div class="flex items-center space-x-3">
+                        <button onclick="switchTab('feed')" class="p-2.5 rounded-full glass-panel active:scale-95" title="Back">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                        </button>
+                        <h2 class="text-base sm:text-lg font-black tracking-tight">notifications</h2>
+                    </div>
+                    <div id="notifications-list" class="space-y-3">
+                        <div class="text-center py-12 text-white/30 text-xs sm:text-sm">loading notifications...</div>
+                    </div>
+                </div>
+            `;
+            const notifsRef = collection(db, 'artifacts', appId, 'public', 'data', 'notifications');
+            onSnapshot(notifsRef, (snapshot) => {
+                const list = [];
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if (data.targetUid === userProfile.uid) {
+                        list.push({ id: docSnap.id, ...data });
+                    }
+                });
+                list.sort((a, b) => b.createdAt - a.createdAt);
+                const listEl = document.getElementById('notifications-list');
+                if (!listEl) return;
+
+                if (list.length === 0) {
+                    listEl.innerHTML = `<div class="text-center py-16 text-white/40 text-xs sm:text-sm">no notifications yet</div>`;
+                    return;
+                }
+
+                listEl.innerHTML = list.map(n => `
+                    <div onclick="if('${n.senderUid}') viewUserProfile('${n.senderUid}')" class="p-4 rounded-2xl glass-panel flex items-center justify-between cursor-pointer active:scale-98">
+                        <p class="text-xs sm:text-sm text-white/90 font-medium">${n.text}</p>
+                        <span class="text-[10px] text-white/40">${new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
+                `).join('');
+            });
         }
 
         function renderSettingsView(container) {
@@ -1270,73 +1718,65 @@
                 <div class="flex flex-col space-y-6 p-6">
                     <div class="flex items-center space-x-3">
                         <button onclick="switchTab('feed')" class="p-2.5 rounded-full glass-panel active:scale-95" title="Back">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
                         </button>
                         <h2 class="text-base sm:text-lg font-black tracking-tight">settings & profile edit</h2>
                     </div>
 
-                    <!-- Theme Selection -->
-                    <div class="glass-panel p-4 rounded-3xl flex items-center justify-between">
-                        <span class="text-xs font-bold">theme appearance</span>
-                        <div class="flex space-x-2">
-                            <button onclick="applyTheme('dark')" class="px-4 py-2 text-xs font-bold rounded-full ${currentTheme === 'dark' ? 'bg-white text-black dark:bg-white dark:text-black' : 'glass-panel'}">dark</button>
-                            <button onclick="applyTheme('light')" class="px-4 py-2 text-xs font-bold rounded-full ${currentTheme === 'light' ? 'bg-white text-black dark:bg-white dark:text-black' : 'glass-panel'}">white</button>
-                        </div>
-                    </div>
-
                     <form onsubmit="saveProfileSettings(event)" class="space-y-4">
                         <div class="space-y-2">
-                            <label class="text-[10px] font-semibold opacity-50 uppercase">username</label>
+                            <label class="text-[10px] font-semibold text-white/50 uppercase">username</label>
                             <input type="text" id="edit-username" value="${userProfile.username || ''}" required 
-                                class="w-full px-5 py-4 glass-panel rounded-full text-xs sm:text-sm focus:outline-none">
+                                class="w-full px-5 py-4 glass-panel rounded-full text-white text-xs sm:text-sm focus:outline-none">
                         </div>
 
                         <div class="space-y-2">
-                            <label class="text-[10px] font-semibold opacity-50 uppercase">full name</label>
+                            <label class="text-[10px] font-semibold text-white/50 uppercase">full name</label>
                             <input type="text" id="edit-name" value="${userProfile.name || ''}" required 
-                                class="w-full px-5 py-4 glass-panel rounded-full text-xs sm:text-sm focus:outline-none">
+                                class="w-full px-5 py-4 glass-panel rounded-full text-white text-xs sm:text-sm focus:outline-none">
                         </div>
 
                         <div class="space-y-2">
-                            <label class="text-[10px] font-semibold opacity-50 uppercase">bio</label>
-                            <textarea id="edit-bio" rows="3" class="w-full px-5 py-4 glass-panel rounded-3xl text-xs sm:text-sm focus:outline-none resize-none">${userProfile.bio || ''}</textarea>
+                            <label class="text-[10px] font-semibold text-white/50 uppercase">bio</label>
+                            <textarea id="edit-bio" rows="3" class="w-full px-5 py-4 glass-panel rounded-3xl text-white text-xs sm:text-sm focus:outline-none resize-none">${userProfile.bio || ''}</textarea>
                         </div>
 
-                        <div class="flex space-x-3 p-2">
+                        <div class="flex items-center space-x-3 p-2">
                             <div id="settings-avatar-preview" class="w-12 h-12 rounded-full glass-panel flex items-center justify-center overflow-hidden flex-shrink-0">
                                 ${userProfile.avatar ? `<img src="${userProfile.avatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${userProfile.username[0].toUpperCase()}</span>`}
                             </div>
-                            <label class="flex-1 text-xs font-semibold opacity-80 glass-panel py-3.5 rounded-full text-center cursor-pointer active:scale-95">
-                                update avatar
+                            <label class="flex-1 text-xs font-semibold text-white/80 glass-panel py-3.5 rounded-full text-center cursor-pointer active:scale-95">
+                                update profile picture
                                 <input type="file" accept="image/*" onchange="handleSettingsAvatar(event)" class="hidden">
                             </label>
                         </div>
 
-                        <div class="flex space-x-3 p-2">
-                            <div id="settings-banner-preview" class="w-20 h-12 rounded-xl glass-panel flex items-center justify-center overflow-hidden flex-shrink-0">
-                                ${userProfile.banner ? `<img src="${userProfile.banner}" class="w-full h-full object-cover">` : `<span class="text-[10px] opacity-40">banner</span>`}
+                        <div class="flex items-center space-x-3 p-2">
+                            <div id="settings-banner-preview" class="w-16 h-10 rounded-xl glass-panel flex items-center justify-center overflow-hidden flex-shrink-0">
+                                ${userProfile.banner ? `<img src="${userProfile.banner}" class="w-full h-full object-cover">` : `<span class="text-[9px] text-white/40">banner</span>`}
                             </div>
-                            <label class="flex-1 text-xs font-semibold opacity-80 glass-panel py-3.5 rounded-full text-center cursor-pointer active:scale-95">
+                            <label class="flex-1 text-xs font-semibold text-white/80 glass-panel py-3.5 rounded-full text-center cursor-pointer active:scale-95">
                                 update profile banner
                                 <input type="file" accept="image/*" onchange="handleSettingsBanner(event)" class="hidden">
                             </label>
                         </div>
 
-                        <button type="submit" class="w-full py-4 bg-white text-black dark:bg-white dark:text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">save profile</button>
+                        <button type="submit" class="w-full py-4 bg-white text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">save profile</button>
                     </form>
 
-                    <!-- Account Deletion Section -->
-                    <div class="pt-6 border-t opacity-80 space-y-3">
-                        <h3 class="text-xs font-bold text-red-500 uppercase tracking-widest">danger zone</h3>
-                        <div class="glass-panel p-5 rounded-3xl space-y-3">
-                            <p class="text-[11px] opacity-70 leading-relaxed">To delete your account permanently, type your exact username (<span class="font-bold">@${userProfile.username}</span>) below to confirm.</p>
-                            <input type="text" id="delete-confirm-username" placeholder="enter your username..." 
-                                class="w-full px-4 py-3 glass-panel rounded-full text-xs focus:outline-none">
-                            <button onclick="verifyAndDeleteAccount()" class="w-full py-3 bg-red-600 text-white font-bold text-xs rounded-full active:scale-95">delete account</button>
+                    <div class="pt-6 space-y-4">
+                        <h3 class="text-xs font-bold text-white/60 uppercase tracking-widest">about</h3>
+                        <div class="glass-panel p-6 rounded-3xl space-y-3 text-center">
+                            <svg class="w-12 h-12 mx-auto" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="205" cy="256" r="85" fill="white"/>
+                                <circle cx="335" cy="256" r="55" fill="white"/>
+                            </svg>
+                            <p class="text-xs sm:text-sm font-semibold text-white/90">spatialetwo</p>
+                            <p class="text-xs text-white/50 font-normal">an Alby A production</p>
                         </div>
                     </div>
 
-                    <button onclick="logoutUser()" class="w-full py-4 glass-panel font-bold text-xs sm:text-sm rounded-full active:scale-95">log out</button>
+                    <button onclick="logoutUser()" class="w-full py-4 glass-panel text-white/80 font-bold text-xs sm:text-sm rounded-full active:scale-95">log out</button>
                 </div>
             `;
         }
@@ -1379,6 +1819,20 @@
                 return;
             }
 
+            if (newUsername !== userProfile.username) {
+                let taken = false;
+                try {
+                    const snap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'users'));
+                    snap.forEach(d => {
+                        if (d.data().username === newUsername) taken = true;
+                    });
+                } catch(e) {}
+                if (taken) {
+                    showModal(`@${newUsername} is already taken.`);
+                    return;
+                }
+            }
+
             try {
                 const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', userProfile.uid);
                 const updates = { username: newUsername, name, bio };
@@ -1396,27 +1850,8 @@
                 saveLocalAccount(userProfile);
                 showModal("Profile updated successfully.");
             } catch(e) {
-                showModal("Saved profile updates.");
-            }
-        }
-
-        window.verifyAndDeleteAccount = async function() {
-            const val = document.getElementById('delete-confirm-username').value.trim().toLowerCase().replace('@', '');
-            if (val !== userProfile.username) {
-                showModal("Username mismatch. Verification failed.");
-                return;
-            }
-
-            try {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', userProfile.uid));
-                localStorage.removeItem('spatialetwo_logged_username');
-                showModal("Your account has been deleted.");
-                setTimeout(() => {
-                    closeModal();
-                    renderAuthScreen();
-                }, 1500);
-            } catch(e) {
-                showModal("Account deletion failed.");
+                console.error("Save profile error:", e);
+                showModal("Saved profile locally.");
             }
         }
 
@@ -1425,15 +1860,15 @@
                 <div class="flex flex-col space-y-6 p-6">
                     <div class="flex items-center space-x-3">
                         <button onclick="switchTab('feed')" class="p-2.5 rounded-full glass-panel active:scale-95" title="Back">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
                         </button>
                         <h2 class="text-base sm:text-lg font-black tracking-tight">search</h2>
                     </div>
 
                     <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="search users (@username) or #hashtags..." 
-                        class="w-full px-5 py-4 glass-panel rounded-full placeholder-opacity-30 text-xs sm:text-sm focus:outline-none">
+                        class="w-full px-5 py-4 glass-panel rounded-full text-white placeholder-white/30 text-xs sm:text-sm focus:outline-none">
                     <div id="search-results" class="space-y-4">
-                        <div class="text-center py-12 opacity-30 text-xs sm:text-sm">search network</div>
+                        <div class="text-center py-12 text-white/30 text-xs sm:text-sm">search network</div>
                     </div>
                 </div>
             `;
@@ -1443,7 +1878,7 @@
             const q = queryStr.trim().toLowerCase();
             const resultsEl = document.getElementById('search-results');
             if (!q) {
-                resultsEl.innerHTML = `<div class="text-center py-12 opacity-30 text-xs sm:text-sm">search network</div>`;
+                resultsEl.innerHTML = `<div class="text-center py-12 text-white/30 text-xs sm:text-sm">search network</div>`;
                 return;
             }
 
@@ -1457,8 +1892,8 @@
             });
 
             resultsEl.innerHTML = matchingUsers.map(u => `
-                <div class="p-4 rounded-2xl glass-panel flex items-center justify-between">
-                    <div onclick="viewUserProfile('${u.uid}')" class="flex items-center space-x-3 cursor-pointer flex-1">
+                <div onclick="viewUserProfile('${u.uid}')" class="p-4 rounded-2xl glass-panel flex items-center justify-between cursor-pointer active:scale-98">
+                    <div class="flex items-center space-x-3">
                         <div class="w-10 h-10 rounded-full glass-panel overflow-hidden flex items-center justify-center">
                             ${u.avatar ? `<img src="${u.avatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${u.username[0].toUpperCase()}</span>`}
                         </div>
@@ -1467,15 +1902,12 @@
                                 ${u.name}
                                 ${getVerifyBadge(u)}
                             </h4>
-                            <p class="text-[10px] opacity-40">@${u.username}</p>
+                            <p class="text-[10px] text-white/40">@${u.username}</p>
                         </div>
                     </div>
-                    <div class="flex space-x-2">
-                        <button onclick="openDirectMessage('${u.uid}', '${u.username}', '${u.avatar || ''}')" class="px-4 py-2 text-xs font-semibold rounded-full glass-panel active:scale-95">dm</button>
-                        <button onclick="viewUserProfile('${u.uid}')" class="px-4 py-2 text-xs font-semibold rounded-full bg-white text-black dark:bg-white dark:text-black active:scale-95">view</button>
-                    </div>
+                    <span class="text-xs font-semibold text-white/70">view</span>
                 </div>
-            `).join('') || `<div class="text-center py-12 opacity-40 text-xs sm:text-sm">no users found</div>`;
+            `).join('') || `<div class="text-center py-12 text-white/40 text-xs sm:text-sm">no users found</div>`;
         }
 
         window.viewUserProfile = function(uid) {
@@ -1496,52 +1928,56 @@
             container.innerHTML = `
                 <div class="flex flex-col space-y-6 pb-6">
                     <!-- Profile Banner -->
-                    <div class="w-full h-36 sm:h-48 glass-panel overflow-hidden relative">
-                        ${profileData.banner ? `<img src="${profileData.banner}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-gradient-to-r opacity-5"></div>`}
-                        <button onclick="switchTab('feed')" class="absolute top-4 left-4 p-2.5 rounded-full glass-panel active:scale-95">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
-                        </button>
+                    <div class="w-full h-36 glass-panel relative overflow-hidden">
+                        ${profileData.banner ? `<img src="${profileData.banner}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-gradient-to-r from-white/10 to-transparent"></div>`}
+                        <div class="absolute top-4 left-4">
+                            <button onclick="switchTab('feed')" class="p-2.5 rounded-full glass-panel active:scale-95 text-white" title="Back">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="px-6 flex flex-col space-y-4">
-                        <div class="flex items-end justify-between -mt-16 sm:-mt-20">
-                            <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full glass-panel overflow-hidden flex items-center justify-center border-4 border-black relative">
-                                ${profileData.avatar ? `<img src="${profileData.avatar}" class="w-full h-full object-cover">` : `<span class="text-2xl font-bold">${profileData.username[0].toUpperCase()}</span>`}
+                    <div class="px-6 space-y-6">
+                        <div class="flex items-end justify-between -mt-14 relative z-10">
+                            <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full glass-panel overflow-hidden flex items-center justify-center flex-shrink-0 border-4 border-black">
+                                ${profileData.avatar ? `<img src="${profileData.avatar}" class="w-full h-full object-cover">` : `<span class="text-xl font-bold">${profileData.username[0].toUpperCase()}</span>`}
                             </div>
                             <div class="flex space-x-2">
                                 ${!isSelf ? `
-                                    <button onclick="openDirectMessage('${profileData.uid}', '${profileData.username}', '${profileData.avatar || ''}')" class="px-5 py-2.5 bg-white text-black dark:bg-white dark:text-black font-bold text-xs rounded-full active:scale-95">dm</button>
-                                    <button onclick="toggleFollow('${profileData.uid}')" class="px-5 py-2.5 glass-panel font-bold text-xs rounded-full active:scale-95">
+                                    <button onclick="openDmWithUser('${profileData.uid}')" class="px-5 py-2.5 text-xs font-semibold rounded-full glass-panel active:scale-95">dm</button>
+                                    <button onclick="toggleFollow('${profileData.uid}')" class="px-6 py-2.5 text-xs font-bold rounded-full bg-white text-black active:scale-95">
                                         ${userProfile.following && userProfile.following.includes(profileData.uid) ? 'following' : 'follow'}
                                     </button>
                                 ` : `
-                                    <button onclick="switchTab('settings')" class="px-5 py-2.5 glass-panel font-bold text-xs rounded-full active:scale-95">edit profile</button>
+                                    <button onclick="switchTab('settings')" class="px-6 py-2.5 glass-panel text-white font-bold text-xs rounded-full active:scale-95">
+                                        edit profile
+                                    </button>
                                 `}
                             </div>
                         </div>
 
-                        <div class="space-y-1">
-                            <h2 class="text-lg sm:text-xl font-black flex items-center">
+                        <div class="flex flex-col space-y-1">
+                            <h2 class="text-base sm:text-xl font-black flex items-center">
                                 ${profileData.name}
                                 ${getVerifyBadge(profileData)}
                             </h2>
-                            <p class="text-xs sm:text-sm opacity-40">@${profileData.username}</p>
-                            <p class="text-xs sm:text-sm opacity-80 pt-2">${profileData.bio || 'no bio'}</p>
+                            <p class="text-xs sm:text-sm text-white/40">@${profileData.username}</p>
+                            <p class="text-xs sm:text-sm text-white/80 pt-1">${profileData.bio || 'no bio'}</p>
                         </div>
 
-                        <div class="flex space-x-6 py-4 text-xs sm:text-sm opacity-70 font-semibold glass-panel px-6 rounded-2xl justify-around">
+                        <div class="flex space-x-6 py-4 text-xs sm:text-sm text-white/70 font-semibold glass-panel px-6 rounded-2xl justify-around">
                             <button onclick="showFollowersModal('${profileData.uid}')" class="text-center active:scale-95">
-                                <span class="font-bold block text-base">${profileData.followers ? profileData.followers.length : 0}</span> followers
+                                <span class="text-white font-bold block text-base">${profileData.followers ? profileData.followers.length : 0}</span> followers
                             </button>
                             <button onclick="showFollowingModal('${profileData.uid}')" class="text-center active:scale-95">
-                                <span class="font-bold block text-base">${profileData.following ? profileData.following.length : 0}</span> following
+                                <span class="text-white font-bold block text-base">${profileData.following ? profileData.following.length : 0}</span> following
                             </button>
                         </div>
 
                         <div class="space-y-4 pt-2">
-                            <h3 class="text-[10px] font-bold opacity-40 uppercase tracking-widest">publications</h3>
+                            <h3 class="text-[10px] font-bold text-white/40 uppercase tracking-widest">publications</h3>
                             <div id="user-posts-list" class="space-y-4">
-                                <div class="text-center py-8 opacity-30 text-xs sm:text-sm">loading publications...</div>
+                                <div class="text-center py-8 text-white/30 text-xs sm:text-sm">loading publications...</div>
                             </div>
                         </div>
                     </div>
@@ -1563,26 +1999,26 @@
                 if (!listEl) return;
 
                 if (userPosts.length === 0) {
-                    listEl.innerHTML = `<div class="text-center py-12 opacity-40 text-xs sm:text-sm">no publications yet</div>`;
+                    listEl.innerHTML = `<div class="text-center py-12 text-white/40 text-xs sm:text-sm">no publications yet</div>`;
                     return;
                 }
 
                 listEl.innerHTML = userPosts.map(post => `
                     <div class="p-5 rounded-3xl glass-panel space-y-3">
                         <div class="flex justify-between items-center">
-                            <span class="text-[10px] opacity-40">${new Date(post.createdAt).toLocaleDateString()}</span>
+                            <span class="text-[10px] text-white/40">${new Date(post.createdAt).toLocaleDateString()}</span>
                             ${isSelf ? `
                                 <div class="flex space-x-2">
-                                    <button onclick="openEditModal('${post.id}', \`${post.caption || ''}\`)" class="p-1.5 opacity-60">
+                                    <button onclick="openEditModal('${post.id}', \`${post.caption || ''}\`)" class="p-1.5 text-white/60">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                     </button>
-                                    <button onclick="deletePost('${post.id}')" class="p-1.5 opacity-60">
+                                    <button onclick="deletePost('${post.id}')" class="p-1.5 text-white/60">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                     </button>
                                 </div>
                             ` : ''}
                         </div>
-                        <p class="text-xs sm:text-sm opacity-90">${formatPostContent(post.caption)}</p>
+                        <p class="text-xs sm:text-sm text-white/90">${formatPostContent(post.caption)}</p>
                         ${post.media ? `
                             <div class="w-full aspect-square rounded-2xl overflow-hidden glass-panel">
                                 ${post.isVideo ? `<video src="${post.media}" controls class="w-full h-full object-cover"></video>` : `<img src="${post.media}" class="w-full h-full object-cover">`}
@@ -1599,7 +2035,7 @@
             const content = document.getElementById('user-list-content');
             
             title.innerText = 'followers';
-            content.innerHTML = `<div class="text-center py-6 opacity-40 text-xs">loading...</div>`;
+            content.innerHTML = `<div class="text-center py-6 text-white/40 text-xs">loading...</div>`;
             modal.classList.remove('hidden');
 
             const targetSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', targetUid));
@@ -1607,7 +2043,7 @@
             const followerUids = targetSnap.data().followers || [];
 
             if (followerUids.length === 0) {
-                content.innerHTML = `<div class="text-center py-6 opacity-40 text-xs">no followers yet</div>`;
+                content.innerHTML = `<div class="text-center py-6 text-white/40 text-xs">no followers yet</div>`;
                 return;
             }
 
@@ -1635,7 +2071,7 @@
             const content = document.getElementById('user-list-content');
 
             title.innerText = 'following';
-            content.innerHTML = `<div class="text-center py-6 opacity-40 text-xs">loading...</div>`;
+            content.innerHTML = `<div class="text-center py-6 text-white/40 text-xs">loading...</div>`;
             modal.classList.remove('hidden');
 
             const targetSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', targetUid));
@@ -1643,7 +2079,7 @@
             const followingUids = targetSnap.data().following || [];
 
             if (followingUids.length === 0) {
-                content.innerHTML = `<div class="text-center py-6 opacity-40 text-xs">not following anyone yet</div>`;
+                content.innerHTML = `<div class="text-center py-6 text-white/40 text-xs">not following anyone yet</div>`;
                 return;
             }
 
@@ -1667,51 +2103,6 @@
 
         window.closeUserListModal = function() {
             document.getElementById('user-list-modal').classList.add('hidden');
-        }
-
-        window.formatPostContent = function(text) {
-            if (!text) return '';
-            return text.replace(/(#\w+|@\w+)/g, '<span class="font-bold">$1</span>');
-        }
-
-        window.openEditModal = function(id, currentCaption) {
-            activeEditingPostId = id;
-            document.getElementById('edit-post-caption').value = currentCaption;
-            document.getElementById('edit-post-modal').classList.remove('hidden');
-        }
-
-        window.closeEditModal = function() {
-            document.getElementById('edit-post-modal').classList.add('hidden');
-            activeEditingPostId = null;
-        }
-
-        window.savePostEdit = async function() {
-            if (!activeEditingPostId) return;
-            const newCaption = document.getElementById('edit-post-caption').value.trim();
-            const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', activeEditingPostId);
-            await updateDoc(postRef, { caption: newCaption });
-            closeEditModal();
-            showModal("Publication updated.");
-        }
-
-        window.deletePost = async function(id) {
-            try {
-                const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', id);
-                await deleteDoc(postRef);
-                showModal("Publication removed.");
-            } catch(e) {}
-        }
-
-        window.toggleComments = function(postId) {
-            const el = document.getElementById(`comments-section-${postId}`);
-            if (el) el.classList.toggle('hidden');
-        }
-
-        window.handleCommentKeyDown = function(event, postId, authorUid) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                addComment(postId, authorUid);
-            }
         }
 
         window.onload = function() {
