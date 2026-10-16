@@ -120,15 +120,6 @@
             .username-text { font-size: 0.925rem; }
             .header-icon { width: 1.4rem; height: 1.4rem; }
         }
-
-        .story-ring {
-            background: linear-gradient(135deg, #ffffff 0%, #888888 100%);
-            padding: 2px;
-        }
-
-        .story-progress-bar {
-            transition: width 0.1s linear;
-        }
     </style>
 </head>
 <body class="bg-black text-white antialiased selection:bg-white selection:text-black min-h-screen">
@@ -196,35 +187,6 @@
         </div>
     </div>
 
-    <!-- Story Viewer with 10s Timer & Interactive Reply -->
-    <div id="story-viewer" class="fixed inset-0 z-50 bg-black flex flex-col justify-between hidden p-4 sm:p-8">
-        <div class="w-full flex flex-col space-y-2 z-10 pt-2">
-            <!-- 10-Second Story Progress Bar -->
-            <div class="w-full bg-white/20 h-1 rounded-full overflow-hidden">
-                <div id="story-timer-bar" class="bg-white h-full w-0 story-progress-bar"></div>
-            </div>
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-3 cursor-pointer" onclick="viewUserProfileFromStory()">
-                    <div id="story-author-avatar" class="w-10 h-10 rounded-full glass-panel overflow-hidden"></div>
-                    <span id="story-author-name" class="text-xs sm:text-sm font-bold"></span>
-                </div>
-                <button onclick="closeStoryViewer()" class="p-3 text-white text-lg font-bold active:scale-95">✕</button>
-            </div>
-        </div>
-        
-        <div class="flex-1 flex items-center justify-center relative my-4 rounded-3xl overflow-hidden glass-panel">
-            <img id="story-viewer-img" class="max-h-full max-w-full object-contain hidden">
-            <video id="story-viewer-vid" class="max-h-full max-w-full object-contain hidden" autoplay playsinline></video>
-        </div>
-        
-        <div class="flex space-x-3 items-center pb-4 z-10">
-            <input type="text" id="story-reply-input" placeholder="send a reply... (Enter to send)" 
-                onkeydown="handleStoryReplyKeyDown(event)"
-                class="flex-1 px-5 py-3.5 glass-panel rounded-full text-xs sm:text-sm text-white focus:outline-none">
-            <button onclick="sendStoryReply()" class="px-6 py-3.5 bg-white text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">send</button>
-        </div>
-    </div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -251,9 +213,6 @@
         let activeTab = 'feed';
         let viewProfileUid = null;
         let activeEditingPostId = null;
-        let activeStoryUserUid = null;
-        let storyTimerInterval = null;
-        let storyStartTime = null;
 
         // System Dialog Handler
         window.showModal = function(msg) {
@@ -332,10 +291,8 @@
         async function restoreUserSession() {
             const savedUsername = localStorage.getItem('spatialetwo_logged_username');
             if (savedUsername) {
-                // Try remote Firestore search first
                 let found = await loadProfileByUsername(savedUsername);
                 if (!found) {
-                    // Fallback to offline stored accounts
                     const localAccs = getStoredAccounts();
                     if (localAccs[savedUsername]) {
                         userProfile = localAccs[savedUsername];
@@ -348,7 +305,6 @@
                 }
             }
 
-            // Fallback to checking Firebase document via UID
             if (currentUser) {
                 try {
                     const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
@@ -573,7 +529,6 @@
                 return;
             }
 
-            // Ensure Auth state exists
             let activeUid = currentUser ? currentUser.uid : 'usr_' + Date.now();
             if (!currentUser) {
                 try {
@@ -582,7 +537,6 @@
                 } catch(e) {}
             }
 
-            // Check duplicate username
             let usernameTaken = false;
             try {
                 const usersSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'users'));
@@ -629,7 +583,6 @@
             const username = document.getElementById('login-username').value.trim().toLowerCase();
             const password = document.getElementById('login-password').value;
 
-            // 1. Check local storage first
             const localAccs = getStoredAccounts();
             if (localAccs[username] && localAccs[username].password === password) {
                 userProfile = localAccs[username];
@@ -638,7 +591,6 @@
                 return;
             }
 
-            // 2. Query Firestore
             try {
                 const usersSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'users'));
                 let matchedUser = null;
@@ -681,9 +633,6 @@
                         <span class="app-title font-black tracking-tighter">spatialetwo</span>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <button onclick="switchTab('reels')" class="p-3 rounded-full glass-panel active:scale-95" title="Reels">
-                            <svg class="header-icon text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                        </button>
                         <button onclick="switchTab('notifications')" class="relative p-3 rounded-full glass-panel active:scale-95" title="Notifications">
                             <svg class="header-icon text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
                             <span id="notif-badge" class="hidden absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-white rounded-full"></span>
@@ -722,7 +671,6 @@
             const container = document.getElementById('view-container');
             if (!container) return;
             if (tab === 'feed') renderFeedView(container);
-            else if (tab === 'reels') renderReelsView(container);
             else if (tab === 'search') renderSearchView(container);
             else if (tab === 'compose') renderComposeView(container);
             else if (tab === 'notifications') renderNotificationsView(container);
@@ -734,153 +682,12 @@
         function renderFeedView(container) {
             container.innerHTML = `
                 <div class="flex flex-col space-y-6 p-6">
-                    <!-- Stories Bar -->
-                    <div id="stories-container" class="flex space-x-4 overflow-x-auto py-2 no-scrollbar">
-                        <div onclick="triggerStoryUpload()" class="flex flex-col items-center space-y-1.5 flex-shrink-0 cursor-pointer active:scale-95">
-                            <div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center relative">
-                                ${userProfile.avatar ? `<img src="${userProfile.avatar}" class="w-full h-full rounded-full object-cover">` : `<span class="text-sm font-bold">${userProfile.username[0].toUpperCase()}</span>`}
-                                <span class="absolute bottom-0 right-0 bg-white text-black text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">+</span>
-                            </div>
-                            <span class="text-[10px] text-white/60">Your story</span>
-                        </div>
-                        <div id="stories-list" class="flex space-x-4"></div>
-                        <input type="file" id="story-file-input" accept="image/*,video/*" onchange="uploadStory(event)" class="hidden">
-                    </div>
-
                     <div id="posts-feed" class="space-y-6">
                         <div class="text-center py-12 text-white/30 text-xs sm:text-sm">loading frequency...</div>
                     </div>
                 </div>
             `;
-            fetchStories();
             fetchPosts();
-        }
-
-        function fetchStories() {
-            const storiesRef = collection(db, 'artifacts', appId, 'public', 'data', 'stories');
-            onSnapshot(storiesRef, (snapshot) => {
-                const stories = [];
-                const now = Date.now();
-                snapshot.forEach(docSnap => {
-                    const data = docSnap.data();
-                    // Show active stories (published within last 24 hrs)
-                    if (now - data.createdAt < 24 * 60 * 60 * 1000) {
-                        stories.push({ id: docSnap.id, ...data });
-                    }
-                });
-                stories.sort((a,b) => b.createdAt - a.createdAt);
-
-                const storiesList = document.getElementById('stories-list');
-                if (!storiesList) return;
-
-                storiesList.innerHTML = stories.map(s => `
-                    <div onclick="openStoryViewer('${s.authorUid}', '${s.media}', '${s.isVideo ? 'video' : 'image'}', '${s.authorUsername}', '${s.authorAvatar || ''}')" 
-                        class="flex flex-col items-center space-y-1.5 flex-shrink-0 cursor-pointer active:scale-95">
-                        <div class="w-16 h-16 rounded-full story-ring flex items-center justify-center">
-                            <div class="w-full h-full rounded-full bg-black p-0.5 overflow-hidden flex items-center justify-center">
-                                ${s.authorAvatar ? `<img src="${s.authorAvatar}" class="w-full h-full rounded-full object-cover">` : `<span class="text-sm font-bold">${s.authorUsername[0].toUpperCase()}</span>`}
-                            </div>
-                        </div>
-                        <span class="text-[10px] text-white/80 font-medium">@${s.authorUsername}</span>
-                    </div>
-                `).join('');
-            });
-        }
-
-        window.triggerStoryUpload = function() {
-            document.getElementById('story-file-input').click();
-        }
-
-        window.uploadStory = function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const isVid = file.type.startsWith('video');
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                const mediaBase64 = e.target.result;
-                const newStory = {
-                    authorUid: userProfile.uid,
-                    authorUsername: userProfile.username,
-                    authorAvatar: userProfile.avatar || '',
-                    media: mediaBase64,
-                    isVideo: isVid,
-                    createdAt: Date.now()
-                };
-                await setDoc(doc(collection(db, 'artifacts', appId, 'public', 'data', 'stories')), newStory);
-                showModal("Story published successfully.");
-            };
-            reader.readAsDataURL(file);
-        }
-
-        window.openStoryViewer = function(uid, media, type, username, avatar) {
-            activeStoryUserUid = uid;
-            const viewer = document.getElementById('story-viewer');
-            const img = document.getElementById('story-viewer-img');
-            const vid = document.getElementById('story-viewer-vid');
-            const nameEl = document.getElementById('story-author-name');
-            const avatarEl = document.getElementById('story-author-avatar');
-            const bar = document.getElementById('story-timer-bar');
-
-            nameEl.innerText = '@' + username;
-            avatarEl.innerHTML = avatar ? `<img src="${avatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${username[0].toUpperCase()}</span>`;
-
-            if (type === 'video') {
-                img.classList.add('hidden');
-                vid.src = media;
-                vid.classList.remove('hidden');
-            } else {
-                vid.classList.add('hidden');
-                img.src = media;
-                img.classList.remove('hidden');
-            }
-            viewer.classList.remove('hidden');
-
-            // 10 Second Timer Progress
-            if (storyTimerInterval) clearInterval(storyTimerInterval);
-            storyStartTime = Date.now();
-            bar.style.width = '0%';
-            
-            storyTimerInterval = setInterval(() => {
-                const elapsed = Date.now() - storyStartTime;
-                const pct = Math.min(100, (elapsed / 10000) * 100);
-                bar.style.width = pct + '%';
-                if (elapsed >= 10000) {
-                    closeStoryViewer();
-                }
-            }, 100);
-        }
-
-        window.closeStoryViewer = function() {
-            if (storyTimerInterval) clearInterval(storyTimerInterval);
-            const viewer = document.getElementById('story-viewer');
-            const vid = document.getElementById('story-viewer-vid');
-            vid.pause();
-            viewer.classList.add('hidden');
-        }
-
-        window.viewUserProfileFromStory = function() {
-            closeStoryViewer();
-            if (activeStoryUserUid) viewUserProfile(activeStoryUserUid);
-        }
-
-        window.handleStoryReplyKeyDown = function(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                sendStoryReply();
-            }
-        }
-
-        window.sendStoryReply = async function() {
-            const input = document.getElementById('story-reply-input');
-            const text = input.value.trim();
-            if (!text || !activeStoryUserUid) return;
-
-            await addNotification(activeStoryUserUid, `@${userProfile.username} replied to your story: "${text}"`);
-            sendDeviceNotification("spatialetwo", `@${userProfile.username} replied to your story`);
-            input.value = '';
-            showModal("Reply sent!");
-            closeStoryViewer();
         }
 
         function fetchPosts() {
@@ -913,8 +720,7 @@
                                     </div>
                                     <div>
                                         <h4 class="text-xs sm:text-sm font-bold flex items-center">
-                                            @${post.authorUsername}
-                                            ${getVerifyBadge({ followers: post.authorFollowers || [] })}
+                                            @${post.authorUsername}${getVerifyBadge({ followers: post.authorFollowers || [] })}
                                         </h4>
                                         <p class="text-[10px] sm:text-xs text-white/30">${new Date(post.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                                     </div>
@@ -990,70 +796,6 @@
                     `;
                 }).join('');
             }, (err) => console.error(err));
-        }
-
-        function renderReelsView(container) {
-            container.innerHTML = `
-                <div class="flex flex-col space-y-6 p-6">
-                    <div class="flex items-center space-x-3">
-                        <button onclick="switchTab('feed')" class="p-2.5 rounded-full glass-panel active:scale-95" title="Back">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
-                        </button>
-                        <h2 class="text-base sm:text-lg font-black tracking-tight">reels</h2>
-                    </div>
-                    <div id="reels-feed" class="space-y-8">
-                        <div class="text-center py-12 text-white/30 text-xs sm:text-sm">loading reels...</div>
-                    </div>
-                </div>
-            `;
-            fetchReels();
-        }
-
-        function fetchReels() {
-            const postsRef = collection(db, 'artifacts', appId, 'public', 'data', 'posts');
-            onSnapshot(postsRef, (snapshot) => {
-                const reels = [];
-                snapshot.forEach(docSnap => {
-                    const data = docSnap.data();
-                    if (data.isVideo || data.ratio === '9/16') {
-                        reels.push({ id: docSnap.id, ...data });
-                    }
-                });
-                reels.sort((a,b) => b.createdAt - a.createdAt);
-
-                const reelsEl = document.getElementById('reels-feed');
-                if (!reelsEl) return;
-
-                if (reels.length === 0) {
-                    reelsEl.innerHTML = `<div class="text-center py-16 text-white/40 text-xs sm:text-sm">no video reels uploaded yet</div>`;
-                    return;
-                }
-
-                reelsEl.innerHTML = reels.map(reel => {
-                    const isLiked = reel.likes && reel.likes.includes(userProfile.uid);
-                    return `
-                        <div class="relative w-full rounded-3xl overflow-hidden glass-panel flex flex-col justify-end p-6" style="aspect-ratio: 9/16; max-height: 70vh;">
-                            <video src="${reel.media}" autoplay loop playsinline class="absolute inset-0 w-full h-full object-cover"></video>
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                            <div class="relative z-10 space-y-3">
-                                <div class="flex items-center space-x-3 cursor-pointer" onclick="viewUserProfile('${reel.authorUid}')">
-                                    <div class="w-10 h-10 rounded-full glass-panel overflow-hidden flex items-center justify-center">
-                                        ${reel.authorAvatar ? `<img src="${reel.authorAvatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${reel.authorUsername[0].toUpperCase()}</span>`}
-                                    </div>
-                                    <span class="text-xs sm:text-sm font-bold">@${reel.authorUsername}</span>
-                                </div>
-                                <p class="text-xs sm:text-sm text-white/90">${formatPostContent(reel.caption)}</p>
-                                <div class="flex space-x-6 text-xs pt-2">
-                                    <button onclick="toggleLike('${reel.id}', '${reel.authorUid}')" class="flex items-center space-x-1.5 active:scale-95 ${isLiked ? 'text-white font-bold' : ''}">
-                                        <svg class="w-5 h-5" fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                                        <span>${reel.likes ? reel.likes.length : 0}</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            });
         }
 
         function formatPostContent(text) {
@@ -1167,7 +909,6 @@
                                 <button type="button" id="ratio-btn-1-1" onclick="setPostRatio('1/1')" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-black">1:1 Square</button>
                                 <button type="button" id="ratio-btn-16-9" onclick="setPostRatio('16/9')" class="flex-1 py-2.5 rounded-xl text-xs font-bold glass-panel text-white/70">16:9 Wide</button>
                                 <button type="button" id="ratio-btn-4-5" onclick="setPostRatio('4/5')" class="flex-1 py-2.5 rounded-xl text-xs font-bold glass-panel text-white/70">4:5 Portrait</button>
-                                <button type="button" id="ratio-btn-9-16" onclick="setPostRatio('9/16')" class="flex-1 py-2.5 rounded-xl text-xs font-bold glass-panel text-white/70">9:16 Reel</button>
                             </div>
                         </div>
                     </div>
@@ -1175,658 +916,4 @@
                     <div id="compose-preview" class="w-full hidden aspect-square rounded-3xl overflow-hidden glass-panel relative">
                         <img id="compose-preview-img" class="w-full h-full object-cover hidden">
                         <video id="compose-preview-vid" controls class="w-full h-full object-cover hidden"></video>
-                        <button onclick="removeComposeMedia()" class="absolute top-4 right-4 px-3.5 py-1.5 bg-black/80 text-white text-xs font-bold rounded-full">remove</button>
-                    </div>
-
-                    <button onclick="publishPost()" class="w-full py-4 bg-white text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">publish</button>
-                </div>
-            `;
-        }
-
-        window.setPostRatio = function(ratio) {
-            composeRatio = ratio;
-            ['1-1', '16-9', '4-5', '9-16'].forEach(r => {
-                const btn = document.getElementById(`ratio-btn-${r}`);
-                if (btn) {
-                    btn.className = (r.replace('-', '/') === ratio) 
-                        ? "flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-black"
-                        : "flex-1 py-2.5 rounded-xl text-xs font-bold glass-panel text-white/70";
-                }
-            });
-
-            const preview = document.getElementById('compose-preview');
-            if (preview) {
-                preview.style.aspectRatio = ratio === '16/9' ? '16/9' : ratio === '4/5' ? '4/5' : ratio === '9/16' ? '9/16' : '1/1';
-            }
-        }
-
-        window.handleComposeKeyDown = function(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                publishPost();
-            }
-        }
-
-        window.handlePostMediaUpload = function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                isVideoMedia = file.type.startsWith('video');
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    composeMediaBase64 = e.target.result;
-                    const preview = document.getElementById('compose-preview');
-                    const img = document.getElementById('compose-preview-img');
-                    const vid = document.getElementById('compose-preview-vid');
-
-                    if (isVideoMedia) {
-                        img.classList.add('hidden');
-                        vid.src = composeMediaBase64;
-                        vid.classList.remove('hidden');
-                        setPostRatio('9/16');
-                    } else {
-                        vid.classList.add('hidden');
-                        img.src = composeMediaBase64;
-                        img.classList.remove('hidden');
-                    }
-                    if (preview) preview.classList.remove('hidden');
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        window.removeComposeMedia = function() {
-            composeMediaBase64 = null;
-            isVideoMedia = false;
-            const preview = document.getElementById('compose-preview');
-            if (preview) preview.classList.add('hidden');
-        }
-
-        window.publishPost = async function() {
-            const caption = document.getElementById('post-caption').value.trim();
-            if (!caption && !composeMediaBase64) {
-                showModal("Please add text or media to publish.");
-                return;
-            }
-
-            try {
-                const newPost = {
-                    authorUid: userProfile.uid,
-                    authorUsername: userProfile.username,
-                    authorAvatar: userProfile.avatar || '',
-                    authorFollowers: userProfile.followers || [],
-                    caption,
-                    media: composeMediaBase64 || '',
-                    isVideo: isVideoMedia,
-                    ratio: composeRatio,
-                    likes: [],
-                    comments: [],
-                    createdAt: Date.now()
-                };
-
-                await setDoc(doc(collection(db, 'artifacts', appId, 'public', 'data', 'posts')), newPost);
-                composeMediaBase64 = null;
-                isVideoMedia = false;
-                switchTab('feed');
-            } catch (e) {
-                console.error("Publishing error:", e);
-                showModal("Error publishing publication.");
-            }
-        }
-
-        window.toggleLike = async function(postId, authorUid) {
-            const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
-            const postSnap = await getDoc(postRef);
-            if (!postSnap.exists()) return;
-            const data = postSnap.data();
-            let likes = data.likes || [];
-
-            if (likes.includes(userProfile.uid)) {
-                likes = likes.filter(id => id !== userProfile.uid);
-            } else {
-                likes.push(userProfile.uid);
-                if (authorUid !== userProfile.uid) {
-                    await addNotification(authorUid, `@${userProfile.username} liked your publication`);
-                    sendDeviceNotification("spatialetwo", `@${userProfile.username} liked your post`);
-                }
-            }
-            await updateDoc(postRef, { likes });
-        }
-
-        window.addComment = async function(postId, authorUid) {
-            const input = document.getElementById(`comment-input-${postId}`);
-            const text = input.value.trim();
-            if (!text) return;
-
-            const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
-            const postSnap = await getDoc(postRef);
-            if (!postSnap.exists()) return;
-            const data = postSnap.data();
-            const comments = data.comments || [];
-
-            comments.push({
-                uid: userProfile.uid,
-                username: userProfile.username,
-                text,
-                likes: [],
-                createdAt: Date.now()
-            });
-
-            await updateDoc(postRef, { comments });
-            if (authorUid !== userProfile.uid) {
-                await addNotification(authorUid, `@${userProfile.username} commented on your publication`);
-                sendDeviceNotification("spatialetwo", `@${userProfile.username} commented on your post`);
-            }
-            input.value = '';
-        }
-
-        window.toggleFollow = async function(targetUid) {
-            if (targetUid === userProfile.uid) return;
-            const targetRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', targetUid);
-            const myRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', userProfile.uid);
-
-            const targetSnap = await getDoc(targetRef);
-            const mySnap = await getDoc(myRef);
-            if (!targetSnap.exists() || !mySnap.exists()) return;
-
-            const targetData = targetSnap.data();
-            const myData = mySnap.data();
-
-            let myFollowing = myData.following || [];
-            let targetFollowers = targetData.followers || [];
-
-            if (myFollowing.includes(targetUid)) {
-                myFollowing = myFollowing.filter(id => id !== targetUid);
-                targetFollowers = targetFollowers.filter(id => id !== userProfile.uid);
-            } else {
-                myFollowing.push(targetUid);
-                targetFollowers.push(userProfile.uid);
-                
-                await addNotification(targetUid, `@${userProfile.username} started following you`);
-                sendDeviceNotification("spatialetwo", `@${userProfile.username} started following you`);
-            }
-
-            await updateDoc(myRef, { following: myFollowing });
-            await updateDoc(targetRef, { followers: targetFollowers });
-            
-            userProfile.following = myFollowing;
-            saveLocalAccount(userProfile);
-            renderMainApp();
-        }
-
-        async function addNotification(targetUid, text) {
-            const notifRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'notifications'));
-            await setDoc(notifRef, {
-                targetUid,
-                senderUid: userProfile.uid,
-                text,
-                read: false,
-                createdAt: Date.now()
-            });
-        }
-
-        function listenToNotifications() {
-            const notifsRef = collection(db, 'artifacts', appId, 'public', 'data', 'notifications');
-            onSnapshot(notifsRef, (snapshot) => {
-                let count = 0;
-                snapshot.forEach(docSnap => {
-                    const data = docSnap.data();
-                    if (data.targetUid === userProfile.uid && !data.read) {
-                        count++;
-                    }
-                });
-                const badge = document.getElementById('notif-badge');
-                if (badge) {
-                    if (count > 0) badge.classList.remove('hidden');
-                    else badge.classList.add('hidden');
-                }
-            });
-        }
-
-        function renderNotificationsView(container) {
-            container.innerHTML = `
-                <div class="flex flex-col space-y-6 p-6">
-                    <div class="flex items-center space-x-3">
-                        <button onclick="switchTab('feed')" class="p-2.5 rounded-full glass-panel active:scale-95" title="Back">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
-                        </button>
-                        <h2 class="text-base sm:text-lg font-black tracking-tight">notifications</h2>
-                    </div>
-                    <div id="notifications-list" class="space-y-3">
-                        <div class="text-center py-12 text-white/30 text-xs sm:text-sm">loading notifications...</div>
-                    </div>
-                </div>
-            `;
-            const notifsRef = collection(db, 'artifacts', appId, 'public', 'data', 'notifications');
-            onSnapshot(notifsRef, (snapshot) => {
-                const list = [];
-                snapshot.forEach(docSnap => {
-                    const data = docSnap.data();
-                    if (data.targetUid === userProfile.uid) {
-                        list.push({ id: docSnap.id, ...data });
-                    }
-                });
-                list.sort((a, b) => b.createdAt - a.createdAt);
-                const listEl = document.getElementById('notifications-list');
-                if (!listEl) return;
-
-                if (list.length === 0) {
-                    listEl.innerHTML = `<div class="text-center py-16 text-white/40 text-xs sm:text-sm">no notifications yet</div>`;
-                    return;
-                }
-
-                listEl.innerHTML = list.map(n => `
-                    <div onclick="if('${n.senderUid}') viewUserProfile('${n.senderUid}')" class="p-4 rounded-2xl glass-panel flex items-center justify-between cursor-pointer active:scale-98">
-                        <p class="text-xs sm:text-sm text-white/90 font-medium">${n.text}</p>
-                        <span class="text-[10px] text-white/40">${new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                    </div>
-                `).join('');
-            });
-        }
-
-        function renderSettingsView(container) {
-            container.innerHTML = `
-                <div class="flex flex-col space-y-6 p-6">
-                    <div class="flex items-center space-x-3">
-                        <button onclick="switchTab('feed')" class="p-2.5 rounded-full glass-panel active:scale-95" title="Back">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
-                        </button>
-                        <h2 class="text-base sm:text-lg font-black tracking-tight">settings & profile edit</h2>
-                    </div>
-
-                    <form onsubmit="saveProfileSettings(event)" class="space-y-4">
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-semibold text-white/50 uppercase">username</label>
-                            <input type="text" id="edit-username" value="${userProfile.username || ''}" required 
-                                class="w-full px-5 py-4 glass-panel rounded-full text-white text-xs sm:text-sm focus:outline-none">
-                        </div>
-
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-semibold text-white/50 uppercase">full name</label>
-                            <input type="text" id="edit-name" value="${userProfile.name || ''}" required 
-                                class="w-full px-5 py-4 glass-panel rounded-full text-white text-xs sm:text-sm focus:outline-none">
-                        </div>
-
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-semibold text-white/50 uppercase">bio</label>
-                            <textarea id="edit-bio" rows="3" class="w-full px-5 py-4 glass-panel rounded-3xl text-white text-xs sm:text-sm focus:outline-none resize-none">${userProfile.bio || ''}</textarea>
-                        </div>
-
-                        <div class="flex items-center space-x-3 p-2">
-                            <div id="settings-avatar-preview" class="w-12 h-12 rounded-full glass-panel flex items-center justify-center overflow-hidden flex-shrink-0">
-                                ${userProfile.avatar ? `<img src="${userProfile.avatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${userProfile.username[0].toUpperCase()}</span>`}
-                            </div>
-                            <label class="flex-1 text-xs font-semibold text-white/80 glass-panel py-3.5 rounded-full text-center cursor-pointer active:scale-95">
-                                update profile picture
-                                <input type="file" accept="image/*" onchange="handleSettingsAvatar(event)" class="hidden">
-                            </label>
-                        </div>
-
-                        <button type="submit" class="w-full py-4 bg-white text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">save profile</button>
-                    </form>
-
-                    <div class="pt-6 space-y-4">
-                        <h3 class="text-xs font-bold text-white/60 uppercase tracking-widest">about</h3>
-                        <div class="glass-panel p-6 rounded-3xl space-y-3 text-center">
-                            <svg class="w-12 h-12 mx-auto" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="205" cy="256" r="85" fill="white"/>
-                                <circle cx="335" cy="256" r="55" fill="white"/>
-                            </svg>
-                            <p class="text-xs sm:text-sm font-semibold text-white/90">spatialetwo</p>
-                            <!-- British English & unformatted normal text -->
-                            <p class="text-xs text-white/50 font-normal">an Alby A production</p>
-                        </div>
-                    </div>
-
-                    <button onclick="logoutUser()" class="w-full py-4 glass-panel text-white/80 font-bold text-xs sm:text-sm rounded-full active:scale-95">log out</button>
-                </div>
-            `;
-        }
-
-        let updatedSettingsAvatar = null;
-        window.handleSettingsAvatar = function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    updatedSettingsAvatar = evt.target.result;
-                    document.getElementById('settings-avatar-preview').innerHTML = `<img src="${updatedSettingsAvatar}" class="w-full h-full object-cover">`;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        window.saveProfileSettings = async function(event) {
-            event.preventDefault();
-            const newUsername = document.getElementById('edit-username').value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
-            const name = document.getElementById('edit-name').value.trim();
-            const bio = document.getElementById('edit-bio').value.trim();
-
-            if (!newUsername) {
-                showModal("Please enter a valid username.");
-                return;
-            }
-
-            // Verify unique username if changed
-            if (newUsername !== userProfile.username) {
-                let taken = false;
-                try {
-                    const snap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'users'));
-                    snap.forEach(d => {
-                        if (d.data().username === newUsername) taken = true;
-                    });
-                } catch(e) {}
-                if (taken) {
-                    showModal(`@${newUsername} is already taken.`);
-                    return;
-                }
-            }
-
-            try {
-                const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', userProfile.uid);
-                const updates = { username: newUsername, name, bio };
-                if (updatedSettingsAvatar) updates.avatar = updatedSettingsAvatar;
-
-                await updateDoc(userRef, updates);
-
-                userProfile.username = newUsername;
-                userProfile.name = name;
-                userProfile.bio = bio;
-                if (updatedSettingsAvatar) userProfile.avatar = updatedSettingsAvatar;
-
-                saveLocalAccount(userProfile);
-                showModal("Profile updated successfully.");
-            } catch(e) {
-                console.error("Save profile error:", e);
-                showModal("Saved profile locally.");
-            }
-        }
-
-        function renderSearchView(container) {
-            container.innerHTML = `
-                <div class="flex flex-col space-y-6 p-6">
-                    <div class="flex items-center space-x-3">
-                        <button onclick="switchTab('feed')" class="p-2.5 rounded-full glass-panel active:scale-95" title="Back">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
-                        </button>
-                        <h2 class="text-base sm:text-lg font-black tracking-tight">search</h2>
-                    </div>
-
-                    <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="search users (@username) or #hashtags..." 
-                        class="w-full px-5 py-4 glass-panel rounded-full text-white placeholder-white/30 text-xs sm:text-sm focus:outline-none">
-                    <div id="search-results" class="space-y-4">
-                        <div class="text-center py-12 text-white/30 text-xs sm:text-sm">search network</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        window.handleSearch = async function(queryStr) {
-            const q = queryStr.trim().toLowerCase();
-            const resultsEl = document.getElementById('search-results');
-            if (!q) {
-                resultsEl.innerHTML = `<div class="text-center py-12 text-white/30 text-xs sm:text-sm">search network</div>`;
-                return;
-            }
-
-            const usersSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'users'));
-            const matchingUsers = [];
-            usersSnap.forEach(docSnap => {
-                const data = docSnap.data();
-                if (data.username && (data.username.includes(q) || (data.name && data.name.toLowerCase().includes(q)))) {
-                    matchingUsers.push(data);
-                }
-            });
-
-            resultsEl.innerHTML = matchingUsers.map(u => `
-                <div onclick="viewUserProfile('${u.uid}')" class="p-4 rounded-2xl glass-panel flex items-center justify-between cursor-pointer active:scale-98">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-full glass-panel overflow-hidden flex items-center justify-center">
-                            ${u.avatar ? `<img src="${u.avatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${u.username[0].toUpperCase()}</span>`}
-                        </div>
-                        <div>
-                            <h4 class="text-xs sm:text-sm font-bold flex items-center">
-                                ${u.name}
-                                ${getVerifyBadge(u)}
-                            </h4>
-                            <p class="text-[10px] text-white/40">@${u.username}</p>
-                        </div>
-                    </div>
-                    <span class="text-xs font-semibold text-white/70">view</span>
-                </div>
-            `).join('') || `<div class="text-center py-12 text-white/40 text-xs sm:text-sm">no users found</div>`;
-        }
-
-        window.viewUserProfile = function(uid) {
-            viewProfileUid = uid;
-            activeTab = 'user-profile';
-            renderProfileView(document.getElementById('view-container'), uid);
-        }
-
-        async function renderProfileView(container, targetUid) {
-            const isSelf = targetUid === userProfile.uid;
-            let profileData = userProfile;
-
-            if (!isSelf) {
-                const userSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', targetUid));
-                if (userSnap.exists()) profileData = userSnap.data();
-            }
-
-            container.innerHTML = `
-                <div class="flex flex-col space-y-6 p-6">
-                    <div class="flex items-center space-x-3">
-                        <button onclick="switchTab('feed')" class="p-2.5 rounded-full glass-panel active:scale-95" title="Back">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
-                        </button>
-                        <h2 class="text-base sm:text-lg font-black tracking-tight">profile</h2>
-                    </div>
-
-                    <div class="flex items-center space-x-5">
-                        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full glass-panel overflow-hidden flex items-center justify-center flex-shrink-0">
-                            ${profileData.avatar ? `<img src="${profileData.avatar}" class="w-full h-full object-cover">` : `<span class="text-xl font-bold">${profileData.username[0].toUpperCase()}</span>`}
-                        </div>
-                        <div class="flex flex-col space-y-1">
-                            <h2 class="text-base sm:text-xl font-black flex items-center">
-                                ${profileData.name}
-                                ${getVerifyBadge(profileData)}
-                            </h2>
-                            <p class="text-xs sm:text-sm text-white/40">@${profileData.username}</p>
-                            <p class="text-xs sm:text-sm text-white/80 pt-1">${profileData.bio || 'no bio'}</p>
-                        </div>
-                    </div>
-
-                    <div class="flex space-x-6 py-4 text-xs sm:text-sm text-white/70 font-semibold glass-panel px-6 rounded-2xl justify-around">
-                        <button onclick="showFollowersModal('${profileData.uid}')" class="text-center active:scale-95">
-                            <span class="text-white font-bold block text-base">${profileData.followers ? profileData.followers.length : 0}</span> followers
-                        </button>
-                        <button onclick="showFollowingModal('${profileData.uid}')" class="text-center active:scale-95">
-                            <span class="text-white font-bold block text-base">${profileData.following ? profileData.following.length : 0}</span> following
-                        </button>
-                    </div>
-
-                    ${!isSelf ? `
-                        <button onclick="toggleFollow('${profileData.uid}')" class="w-full py-4 bg-white text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">
-                            ${userProfile.following && userProfile.following.includes(profileData.uid) ? 'following' : 'follow'}
-                        </button>
-                    ` : `
-                        <button onclick="switchTab('settings')" class="w-full py-3.5 glass-panel text-white font-bold text-xs sm:text-sm rounded-full active:scale-95">
-                            edit profile
-                        </button>
-                    `}
-
-                    <!-- Story Highlights Shelf -->
-                    <div class="space-y-3">
-                        <h3 class="text-[10px] font-bold text-white/40 uppercase tracking-widest">story highlights</h3>
-                        <div id="profile-highlights" class="flex space-x-4 overflow-x-auto py-1 no-scrollbar">
-                            <div class="text-xs text-white/30 py-2">loading highlights...</div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-4">
-                        <h3 class="text-[10px] font-bold text-white/40 uppercase tracking-widest">publications</h3>
-                        <div id="user-posts-list" class="space-y-4">
-                            <div class="text-center py-8 text-white/30 text-xs sm:text-sm">loading publications...</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // Load Story Highlights
-            fetchProfileHighlights(profileData.uid);
-
-            // Load User Publications
-            const postsRef = collection(db, 'artifacts', appId, 'public', 'data', 'posts');
-            onSnapshot(postsRef, (snapshot) => {
-                const userPosts = [];
-                snapshot.forEach(docSnap => {
-                    const data = docSnap.data();
-                    if (data.authorUid === profileData.uid) {
-                        userPosts.push({ id: docSnap.id, ...data });
-                    }
-                });
-                userPosts.sort((a, b) => b.createdAt - a.createdAt);
-
-                const listEl = document.getElementById('user-posts-list');
-                if (!listEl) return;
-
-                if (userPosts.length === 0) {
-                    listEl.innerHTML = `<div class="text-center py-12 text-white/40 text-xs sm:text-sm">no publications yet</div>`;
-                    return;
-                }
-
-                listEl.innerHTML = userPosts.map(post => `
-                    <div class="p-5 rounded-3xl glass-panel space-y-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[10px] text-white/40">${new Date(post.createdAt).toLocaleDateString()}</span>
-                            ${isSelf ? `
-                                <div class="flex space-x-2">
-                                    <button onclick="openEditModal('${post.id}', \`${post.caption || ''}\`)" class="p-1.5 text-white/60">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                                    </button>
-                                    <button onclick="deletePost('${post.id}')" class="p-1.5 text-white/60">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                    </button>
-                                </div>
-                            ` : ''}
-                        </div>
-                        <p class="text-xs sm:text-sm text-white/90">${formatPostContent(post.caption)}</p>
-                        ${post.media ? `
-                            <div class="w-full aspect-square rounded-2xl overflow-hidden glass-panel">
-                                ${post.isVideo ? `<video src="${post.media}" controls class="w-full h-full object-cover"></video>` : `<img src="${post.media}" class="w-full h-full object-cover">`}
-                            </div>
-                        ` : ''}
-                    </div>
-                `).join('');
-            });
-        }
-
-        async function fetchProfileHighlights(uid) {
-            const hEl = document.getElementById('profile-highlights');
-            if (!hEl) return;
-
-            const storiesSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'stories'));
-            const userStories = [];
-            storiesSnap.forEach(docSnap => {
-                const data = docSnap.data();
-                if (data.authorUid === uid) {
-                    userStories.push({ id: docSnap.id, ...data });
-                }
-            });
-
-            if (userStories.length === 0) {
-                hEl.innerHTML = `<span class="text-xs text-white/30 py-2">no highlights archived</span>`;
-                return;
-            }
-
-            hEl.innerHTML = userStories.map(s => `
-                <div onclick="openStoryViewer('${s.authorUid}', '${s.media}', '${s.isVideo ? 'video' : 'image'}', '${s.authorUsername}', '${s.authorAvatar || ''}')" 
-                    class="flex flex-col items-center space-y-1.5 flex-shrink-0 cursor-pointer active:scale-95">
-                    <div class="w-14 h-14 rounded-full p-0.5 glass-panel overflow-hidden flex items-center justify-center">
-                        ${s.isVideo ? `<video src="${s.media}" class="w-full h-full object-cover"></video>` : `<img src="${s.media}" class="w-full h-full object-cover">`}
-                    </div>
-                    <span class="text-[9px] text-white/50">${new Date(s.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}</span>
-                </div>
-            `).join('');
-        }
-
-        window.showFollowersModal = async function(targetUid) {
-            const modal = document.getElementById('user-list-modal');
-            const title = document.getElementById('user-list-title');
-            const content = document.getElementById('user-list-content');
-            
-            title.innerText = 'followers';
-            content.innerHTML = `<div class="text-center py-6 text-white/40 text-xs">loading...</div>`;
-            modal.classList.remove('hidden');
-
-            const targetSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', targetUid));
-            if (!targetSnap.exists()) return;
-            const followerUids = targetSnap.data().followers || [];
-
-            if (followerUids.length === 0) {
-                content.innerHTML = `<div class="text-center py-6 text-white/40 text-xs">no followers yet</div>`;
-                return;
-            }
-
-            const usersSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'users'));
-            const followersList = [];
-            usersSnap.forEach(d => {
-                if (followerUids.includes(d.data().uid)) followersList.push(d.data());
-            });
-
-            content.innerHTML = followersList.map(u => `
-                <div onclick="closeUserListModal(); viewUserProfile('${u.uid}')" class="p-3 rounded-2xl glass-panel flex items-center justify-between cursor-pointer active:scale-98">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 rounded-full glass-panel overflow-hidden flex items-center justify-center">
-                            ${u.avatar ? `<img src="${u.avatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${u.username[0].toUpperCase()}</span>`}
-                        </div>
-                        <span class="text-xs font-bold flex items-center">@${u.username} ${getVerifyBadge(u)}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        window.showFollowingModal = async function(targetUid) {
-            const modal = document.getElementById('user-list-modal');
-            const title = document.getElementById('user-list-title');
-            const content = document.getElementById('user-list-content');
-
-            title.innerText = 'following';
-            content.innerHTML = `<div class="text-center py-6 text-white/40 text-xs">loading...</div>`;
-            modal.classList.remove('hidden');
-
-            const targetSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', targetUid));
-            if (!targetSnap.exists()) return;
-            const followingUids = targetSnap.data().following || [];
-
-            if (followingUids.length === 0) {
-                content.innerHTML = `<div class="text-center py-6 text-white/40 text-xs">not following anyone yet</div>`;
-                return;
-            }
-
-            const usersSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'users'));
-            const followingList = [];
-            usersSnap.forEach(d => {
-                if (followingUids.includes(d.data().uid)) followingList.push(d.data());
-            });
-
-            content.innerHTML = followingList.map(u => `
-                <div onclick="closeUserListModal(); viewUserProfile('${u.uid}')" class="p-3 rounded-2xl glass-panel flex items-center justify-between cursor-pointer active:scale-98">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 rounded-full glass-panel overflow-hidden flex items-center justify-center">
-                            ${u.avatar ? `<img src="${u.avatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${u.username[0].toUpperCase()}</span>`}
-                        </div>
-                        <span class="text-xs font-bold flex items-center">@${u.username} ${getVerifyBadge(u)}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        window.closeUserListModal = function() {
-            document.getElementById('user-list-modal').classList.add('hidden');
-        }
-
-        window.onload = function() {
-            initAuth();
-        }
-    </script>
-</body>
-</html>
+                        <button onclick="removeComposeMedia()" class
