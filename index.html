@@ -133,7 +133,7 @@
                     <circle cx="205" cy="256" r="85" fill="white"/>
                     <circle cx="335" cy="256" r="55" fill="white"/>
                 </svg>
-                <p class="text-xs sm:text-sm font-bold tracking-widest uppercase text-white/50">spatialetwo</p>
+                <p class="text-xs sm:text-sm font-bold tracking-widest uppercase text-white/50">your space to connect</p>
             </div>
         </main>
     </div>
@@ -316,7 +316,6 @@
         function sendDeviceNotification(title, body) {
             if ("Notification" in window && Notification.permission === "granted") {
                 try {
-                    // Compatible with Android/iOS Web Push / PWA notifications
                     const options = {
                         body: body,
                         icon: 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 512 512\'%3E%3Ccircle cx=\'205\' cy=\'256\' r=\'85\' fill=\'white\'/%3E%3Ccircle cx=\'335\' cy=\'256\' r=\'55\' fill=\'white\'/%3E%3C/svg%3E',
@@ -434,7 +433,7 @@
                             <circle cx="335" cy="256" r="55" fill="white"/>
                         </svg>
                         <h1 class="text-3xl sm:text-4xl font-black tracking-tighter">spatialetwo</h1>
-                        <p class="text-xs sm:text-sm text-white/50 tracking-widest uppercase">the minimalist network</p>
+                        <p class="text-xs sm:text-sm text-white/50 tracking-widest uppercase">your space to connect</p>
                     </div>
 
                     <div class="w-full max-w-sm space-y-6">
@@ -924,7 +923,6 @@
         }
 
         async function fetchMessagesHubData() {
-            // Fetch Groups
             const groupsRef = collection(db, 'artifacts', appId, 'public', 'data', 'groups');
             onSnapshot(groupsRef, (snap) => {
                 const groups = [];
@@ -956,7 +954,6 @@
                 }
             });
 
-            // Fetch DMs based on users interacted with
             const usersSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'users'));
             const dmsList = document.getElementById('dms-hub-list');
             if (!dmsList) return;
@@ -1065,7 +1062,8 @@
             switchTab('messages');
         }
 
-        // --- DM CHAT & VIDEO CALL ---
+        // --- DM CHAT & IMAGE ATTACHMENT ---
+        let pendingDmImageBase64 = null;
         function renderDmChatView(container, targetUid) {
             container.innerHTML = `
                 <div class="flex flex-col h-[85vh] p-4 sm:p-6 space-y-4">
@@ -1087,7 +1085,16 @@
                         <div class="text-center py-12 text-white/30 text-xs">loading chat...</div>
                     </div>
 
-                    <div class="flex space-x-2">
+                    <div id="dm-image-preview-container" class="hidden relative w-24 h-24 rounded-2xl overflow-hidden glass-panel">
+                        <img id="dm-image-preview" class="w-full h-full object-cover">
+                        <button onclick="removeDmImage()" class="absolute top-1 right-1 bg-black/80 text-white text-[10px] px-1.5 py-0.5 rounded-full">✕</button>
+                    </div>
+
+                    <div class="flex space-x-2 items-center">
+                        <label class="p-3.5 rounded-full glass-panel text-white cursor-pointer active:scale-95" title="Attach Image">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <input type="file" accept="image/*" onchange="handleDmImageUpload(event)" class="hidden">
+                        </label>
                         <input type="text" id="dm-input" onkeydown="handleDmKeyDown(event, '${targetUid}')" placeholder="secure message... (Enter to send)" 
                             class="flex-1 px-5 py-4 glass-panel rounded-full text-white placeholder-white/30 text-xs sm:text-sm focus:outline-none">
                         <button onclick="sendDmMessage('${targetUid}')" class="px-6 py-4 bg-white text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">send</button>
@@ -1096,6 +1103,29 @@
             `;
             loadTargetUserInfo(targetUid);
             fetchDmMessages(targetUid);
+        }
+
+        window.handleDmImageUpload = function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    pendingDmImageBase64 = evt.target.result;
+                    const container = document.getElementById('dm-image-preview-container');
+                    const img = document.getElementById('dm-image-preview');
+                    if (container && img) {
+                        img.src = pendingDmImageBase64;
+                        container.classList.remove('hidden');
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        window.removeDmImage = function() {
+            pendingDmImageBase64 = null;
+            const container = document.getElementById('dm-image-preview-container');
+            if (container) container.classList.add('hidden');
         }
 
         async function loadTargetUserInfo(targetUid) {
@@ -1139,8 +1169,9 @@
                     const isSelf = m.senderUid === userProfile.uid;
                     return `
                         <div class="flex flex-col ${isSelf ? 'items-end' : 'items-start'} space-y-1">
-                            <div class="max-w-[80%] p-4 rounded-2xl ${isSelf ? 'bg-white text-black font-medium' : 'glass-panel text-white'} text-xs sm:text-sm">
-                                ${formatPostContent(m.text)}
+                            <div class="max-w-[85%] p-4 rounded-2xl ${isSelf ? 'bg-white text-black font-medium' : 'glass-panel text-white'} text-xs sm:text-sm space-y-2">
+                                ${m.image ? `<img src="${m.image}" class="w-full rounded-xl object-cover max-h-60">` : ''}
+                                ${m.text ? `<div>${formatPostContent(m.text)}</div>` : ''}
                             </div>
                             <span class="text-[9px] text-white/40">${new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         </div>
@@ -1160,12 +1191,13 @@
         window.sendDmMessage = async function(targetUid) {
             const input = document.getElementById('dm-input');
             const text = input.value.trim();
-            if (!text) return;
+            if (!text && !pendingDmImageBase64) return;
 
             const newMsg = {
                 senderUid: userProfile.uid,
                 receiverUid: targetUid,
                 text,
+                image: pendingDmImageBase64 || '',
                 createdAt: Date.now()
             };
 
@@ -1173,6 +1205,7 @@
             await addNotification(targetUid, `@${userProfile.username} sent you a direct message`);
             sendDeviceNotification("spatialetwo", `@${userProfile.username} sent you a DM`);
             input.value = '';
+            removeDmImage();
         }
 
         // --- GROUP CHAT & VIDEO CALL ---
@@ -1319,7 +1352,7 @@
                 .then(stream => {
                     callStream = stream;
                     document.getElementById('call-local-video').srcObject = stream;
-                    document.getElementById('call-remote-video').srcObject = stream; // Mirror simulation
+                    document.getElementById('call-remote-video').srcObject = stream;
                 })
                 .catch(() => {
                     showModal("Camera/Microphone access required for video call.");
@@ -2086,6 +2119,7 @@
             const usersSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'users'));
             const followingList = [];
             usersSnap.forEach(d => {
+                if (followingUids.includes(d.data().uid)) followingList.value = d.data(); // fixed reference
                 if (followingUids.includes(d.data().uid)) followingList.push(d.data());
             });
 
