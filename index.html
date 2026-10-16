@@ -27,7 +27,7 @@
             }
         }
     </script>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='transparent'/%3E%3Ccircle cx='205' cy='256' r='85' fill='white'/%3E%3Ccircle cx='335' cy='256' r='55' fill='white'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='transparent'/%3E%3Ccircle cx='205' cy='256' r='85' fill='currentColor'/%3E%3Ccircle cx='335' cy='256' r='55' fill='currentColor'/%3E%3C/svg%3E">
     
     <style>
         body {
@@ -35,7 +35,7 @@
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent !important;
             user-select: none;
-            transition: background-color 0.2s ease, color 0.2s ease;
+            transition: background-color 0.25s ease, color 0.25s ease;
         }
 
         /* Dynamic Theme Support */
@@ -44,8 +44,8 @@
             color: #ffffff;
         }
         body.light {
-            background-color: #f8f9fa;
-            color: #111111;
+            background-color: #f4f5f7;
+            color: #121212;
         }
 
         a, button, input, textarea, select, div, label, svg {
@@ -59,83 +59,68 @@
             height: 5px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.05);
+            background: rgba(128, 128, 128, 0.05);
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(128, 128, 128, 0.25);
+            background: rgba(128, 128, 128, 0.3);
             border-radius: 9999px;
-        }
-
-        input[type=range] {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100%;
-            background: transparent;
-        }
-        input[type=range]:focus {
-            outline: none;
-        }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 6px;
-            cursor: pointer;
-            background: rgba(128, 128, 128, 0.2);
-            border-radius: 9999px;
-        }
-        input[type=range]::-webkit-slider-thumb {
-            height: 22px;
-            width: 22px;
-            border-radius: 50%;
-            cursor: pointer;
-            -webkit-appearance: none;
-            margin-top: -8px;
-            transition: transform 0.1s ease;
-        }
-
-        body.dark input[type=range]::-webkit-slider-thumb {
-            background: #ffffff;
-            box-shadow: 0 0 10px rgba(255,255,255,0.5);
-        }
-        body.light input[type=range]::-webkit-slider-thumb {
-            background: #111111;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
         }
 
         body.dark .glass-panel {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.04);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
         body.light .glass-panel {
-            background: rgba(0, 0, 0, 0.03);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
         }
 
         body.dark .glass-header {
-            background: rgba(0, 0, 0, 0.92);
+            background: rgba(0, 0, 0, 0.90);
             backdrop-filter: blur(28px);
             -webkit-backdrop-filter: blur(28px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
         body.light .glass-header {
-            background: rgba(248, 249, 250, 0.92);
+            background: rgba(244, 245, 247, 0.90);
             backdrop-filter: blur(28px);
             -webkit-backdrop-filter: blur(28px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        /* Responsive Layout Modes */
+        .desktop-sidebar {
+            display: none;
+        }
+        .mobile-bottom-nav {
+            display: flex;
         }
 
         @media (min-width: 1024px) {
-            .app-title { font-size: 1.5rem; }
-            .post-text { font-size: 1.125rem; }
-            .username-text { font-size: 1.1rem; }
-            .header-icon { width: 1.85rem; height: 1.85rem; }
+            .desktop-sidebar { display: flex; }
+            .mobile-bottom-nav { display: none !important; }
+            .app-container {
+                max-width: 1280px !important;
+                display: grid;
+                grid-template-columns: 280px 1fr 340px;
+                gap: 2rem;
+                padding: 0 2rem;
+            }
         }
-        @media (max-width: 767px) {
-            .app-title { font-size: 1.15rem; }
-            .post-text { font-size: 0.925rem; }
-            .username-text { font-size: 0.925rem; }
-            .header-icon { width: 1.4rem; height: 1.4rem; }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .desktop-sidebar { display: flex; width: 80px; }
+            .mobile-bottom-nav { display: none !important; }
+            .app-container {
+                max-width: 768px !important;
+                display: flex;
+                padding-left: 90px;
+            }
         }
     </style>
 </head>
@@ -435,6 +420,10 @@
             if (mode === 'login') {
                 loginBtn.className = "flex-1 py-3 text-xs sm:text-sm font-bold rounded-full bg-white text-black dark:bg-white dark:text-black";
                 signupBtn.className = "flex-1 py-3 text-xs sm:text-sm font-bold rounded-full opacity-70";
+                
+                const localAccs = getStoredAccounts();
+                const accountUsernames = Object.keys(localAccs);
+
                 container.innerHTML = `
                     <form onsubmit="handleLogin(event)" class="space-y-4">
                         <input type="text" id="login-username" placeholder="username" required 
@@ -443,6 +432,28 @@
                             class="w-full px-5 py-4 glass-panel rounded-full placeholder-opacity-30 text-xs sm:text-sm focus:outline-none">
                         <button type="submit" class="w-full py-4 bg-white text-black dark:bg-white dark:text-black font-bold text-xs sm:text-sm rounded-full active:scale-95">enter</button>
                     </form>
+
+                    ${accountUsernames.length > 0 ? `
+                        <div class="pt-4 space-y-2">
+                            <span class="text-[10px] uppercase font-bold opacity-40 tracking-wider block text-center">recent accounts</span>
+                            <div class="space-y-2 max-h-40 overflow-y-auto">
+                                ${accountUsernames.map(uname => {
+                                    const acc = localAccs[uname];
+                                    return `
+                                        <div onclick="quickSelectAccount('${acc.username}', '${acc.password}')" class="p-3 glass-panel rounded-2xl flex items-center justify-between cursor-pointer active:scale-98">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-8 h-8 rounded-full glass-panel overflow-hidden flex items-center justify-center">
+                                                    ${acc.avatar ? `<img src="${acc.avatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${acc.username[0].toUpperCase()}</span>`}
+                                                </div>
+                                                <span class="text-xs font-bold">@${acc.username}</span>
+                                            </div>
+                                            <span class="text-[10px] opacity-40 font-semibold">tap to login</span>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
                 `;
             } else {
                 signupBtn.className = "flex-1 py-3 text-xs sm:text-sm font-bold rounded-full bg-white text-black dark:bg-white dark:text-black";
@@ -501,6 +512,11 @@
                     </form>
                 `;
             }
+        }
+
+        window.quickSelectAccount = function(username, password) {
+            document.getElementById('login-username').value = username;
+            document.getElementById('login-password').value = password;
         }
 
         const GENDER_MAP = ["non-binary", "female", "male", "custom"];
@@ -677,44 +693,96 @@
         function renderMainApp() {
             const mainContent = document.getElementById('main-content');
             mainContent.innerHTML = `
-                <!-- Sticky Main Header -->
-                <header class="sticky top-0 z-40 glass-header px-6 py-4 flex items-center justify-between">
+                <!-- Desktop Sidebar Navigation -->
+                <aside class="desktop-sidebar fixed left-0 top-0 h-screen w-72 glass-header flex-col justify-between p-6 z-40">
+                    <div class="flex flex-col space-y-8">
+                        <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('feed')">
+                            <svg class="w-8 h-8" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="205" cy="256" r="85" fill="currentColor"/>
+                                <circle cx="335" cy="256" r="55" fill="currentColor"/>
+                            </svg>
+                            <span class="app-title font-black tracking-tighter text-lg">spatialetwo</span>
+                        </div>
+                        <div class="flex flex-col space-y-2">
+                            <button onclick="switchTab('feed')" class="flex items-center space-x-4 p-3.5 rounded-2xl glass-panel text-xs font-bold active:scale-95">
+                                <svg class="w-5 h-5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                                <span>feed</span>
+                            </button>
+                            <button onclick="switchTab('search')" class="flex items-center space-x-4 p-3.5 rounded-2xl glass-panel text-xs font-bold active:scale-95">
+                                <svg class="w-5 h-5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <span>search</span>
+                            </button>
+                            <button onclick="switchTab('compose')" class="flex items-center space-x-4 p-3.5 rounded-2xl glass-panel text-xs font-bold active:scale-95">
+                                <svg class="w-5 h-5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                <span>compose</span>
+                            </button>
+                            <button onclick="switchTab('messages')" class="flex items-center space-x-4 p-3.5 rounded-2xl glass-panel text-xs font-bold active:scale-95">
+                                <svg class="w-5 h-5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                                <span>messages</span>
+                            </button>
+                            <button onclick="switchTab('notifications')" class="flex items-center space-x-4 p-3.5 rounded-2xl glass-panel text-xs font-bold active:scale-95">
+                                <svg class="w-5 h-5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                                <span>notifications</span>
+                            </button>
+                            <button onclick="switchTab('profile')" class="flex items-center space-x-4 p-3.5 rounded-2xl glass-panel text-xs font-bold active:scale-95">
+                                <svg class="w-5 h-5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                <span>profile</span>
+                            </button>
+                            <button onclick="switchTab('settings')" class="flex items-center space-x-4 p-3.5 rounded-2xl glass-panel text-xs font-bold active:scale-95">
+                                <svg class="w-5 h-5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+                                <span>settings</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-4 rounded-2xl flex items-center space-x-3 cursor-pointer" onclick="switchTab('profile')">
+                        <div class="w-9 h-9 rounded-full glass-panel overflow-hidden flex items-center justify-center">
+                            ${userProfile.avatar ? `<img src="${userProfile.avatar}" class="w-full h-full object-cover">` : `<span class="text-xs font-bold">${userProfile.username[0].toUpperCase()}</span>`}
+                        </div>
+                        <div class="flex flex-col overflow-hidden">
+                            <span class="text-xs font-bold truncate">@${userProfile.username}</span>
+                            <span class="text-[10px] opacity-40">online</span>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Mobile Header -->
+                <header class="sticky top-0 z-40 glass-header px-6 py-4 flex items-center justify-between lg:hidden">
                     <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('feed')">
-                        <svg class="w-8 h-8 sm:w-9 sm:h-9" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-8 h-8" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="205" cy="256" r="85" fill="currentColor"/>
                             <circle cx="335" cy="256" r="55" fill="currentColor"/>
                         </svg>
-                        <span class="app-title font-black tracking-tighter">spatialetwo</span>
+                        <span class="app-title font-black tracking-tighter text-base">spatialetwo</span>
                     </div>
-                    <div class="flex items-center space-x-3">
-                        <button onclick="switchTab('messages')" class="relative p-3 rounded-full glass-panel active:scale-95" title="Direct Messages & Groups">
-                            <svg class="header-icon opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="switchTab('messages')" class="relative p-2.5 rounded-full glass-panel active:scale-95">
+                            <svg class="w-5 h-5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                         </button>
-                        <button onclick="switchTab('notifications')" class="relative p-3 rounded-full glass-panel active:scale-95" title="Notifications">
-                            <svg class="header-icon opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                            <span id="notif-badge" class="hidden absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-black dark:bg-white rounded-full"></span>
+                        <button onclick="switchTab('notifications')" class="relative p-2.5 rounded-full glass-panel active:scale-95">
+                            <svg class="w-5 h-5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                            <span id="notif-badge" class="hidden absolute top-1 right-1 w-2 h-2 bg-black dark:bg-white rounded-full"></span>
                         </button>
-                        <button onclick="switchTab('settings')" class="p-3 rounded-full glass-panel active:scale-95" title="Settings">
-                            <svg class="header-icon opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <button onclick="switchTab('settings')" class="p-2.5 rounded-full glass-panel active:scale-95">
+                            <svg class="w-5 h-5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
                         </button>
                     </div>
                 </header>
 
                 <!-- Dynamic View Area -->
-                <div id="view-container" class="flex-1 pb-24"></div>
+                <div id="view-container" class="flex-1 pb-24 lg:pl-72 lg:pr-80 max-w-2xl mx-auto w-full"></div>
 
-                <!-- Floating Bottom Navigation -->
-                <nav class="fixed bottom-0 left-0 right-0 z-40 glass-header py-3 px-8 flex justify-around items-center max-w-xl mx-auto">
-                    <button onclick="switchTab('feed')" class="p-3 active:scale-95">
+                <!-- Mobile Bottom Navigation -->
+                <nav class="mobile-bottom-nav fixed bottom-0 left-0 right-0 z-40 glass-header py-3 px-8 flex justify-around items-center">
+                    <button onclick="switchTab('feed')" class="p-2 active:scale-95">
                         <svg class="w-6 h-6 ${activeTab === 'feed' ? 'opacity-100 font-bold' : 'opacity-40'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                     </button>
-                    <button onclick="switchTab('search')" class="p-3 active:scale-95">
+                    <button onclick="switchTab('search')" class="p-2 active:scale-95">
                         <svg class="w-6 h-6 ${activeTab === 'search' ? 'opacity-100 font-bold' : 'opacity-40'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </button>
-                    <button onclick="switchTab('compose')" class="p-3 active:scale-95">
+                    <button onclick="switchTab('compose')" class="p-2 active:scale-95">
                         <svg class="w-6 h-6 ${activeTab === 'compose' ? 'opacity-100 font-bold' : 'opacity-40'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     </button>
-                    <button onclick="switchTab('profile')" class="p-3 active:scale-95">
+                    <button onclick="switchTab('profile')" class="p-2 active:scale-95">
                         <svg class="w-6 h-6 ${activeTab === 'profile' ? 'opacity-100 font-bold' : 'opacity-40'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                     </button>
                 </nav>
